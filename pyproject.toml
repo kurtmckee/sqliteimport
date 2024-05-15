@@ -1,0 +1,82 @@
+[tool.poetry]
+name = "sqliteimport"
+version = "0.1.0"
+description = "Import Python code from sqlite databases"
+authors = ["Kurt McKee <contactme@kurtmckee.org>"]
+license = "MIT"
+readme = "README.rst"
+repository = "https://github.com/kurtmckee/sqliteimport"
+homepage = "https://github.com/kurtmckee/sqliteimport"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+# Coverage
+# --------
+
+[tool.coverage.run]
+relative_files = true
+parallel = true
+branch = true
+source = [
+    "sqliteimport",
+    "tests",
+]
+
+[tool.coverage.paths]
+source = [
+    "src",
+    "*/site-packages",
+]
+
+[tool.coverage.report]
+skip_covered = true
+fail_under = 69
+
+
+# Mypy
+# ----
+
+[tool.mypy]
+packages = "sqliteimport"
+strict = true
+sqlite_cache = true
+
+
+# Scriv
+# -----
+
+[tool.scriv]
+version = "literal: pyproject.toml: tool.poetry.version"
+categories = [
+    "Python support",
+    "Added",
+    "Fixed",
+    "Removed",
+    "Changed",
+    "Deprecated",
+    "Security",
+    "Documentation",
+    "Development",
+]
+entry_title_template = "{{ version }} - {{ date.strftime('%Y-%m-%d') }}"
+format = "rst"
+fragment_directory = "changelog.d"
+insert_marker = "scriv-insert-here"
+main_branches = ["main", "releases"]
+new_fragment_template = "file: fragment-template.rst.txt"
+
+
+# Pytest
+# ------
+
+[tool.pytest.ini_options]
+addopts = "--color=yes"
+filterwarnings = [
+    "error",
+]
