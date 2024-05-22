@@ -1,5 +1,6 @@
 .tox/
 __pycache__/
 build/
+dist/
 .coverage
 *.sqlite3
