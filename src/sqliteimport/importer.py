@@ -51,4 +51,8 @@ class SqliteLoader(importlib.abc.Loader):
 
 
 def load(database: pathlib.Path | str) -> None:
-    sys.meta_path.append(SqliteFinder(pathlib.Path(database)))
+    if isinstance(database, str):
+        database = pathlib.Path(database)
+    if not database.is_file():
+        raise FileNotFoundError(f"{database} must exist.")
+    sys.meta_path.append(SqliteFinder(database))

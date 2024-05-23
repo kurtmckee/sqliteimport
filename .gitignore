@@ -1,6 +1,9 @@
-.tox/
+/.tox/
+/build/
+/dist/
+/sample/
+/.coverage
+/poetry.lock
+
 __pycache__/
-build/
-dist/
-.coverage
 *.sqlite3
