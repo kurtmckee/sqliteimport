@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sqliteimport"
-version = "0.1.0"
+version = "0.2.0"
 description = "Import Python code from sqlite databases"
 authors = ["Kurt McKee <contactme@kurtmckee.org>"]
 license = "MIT"

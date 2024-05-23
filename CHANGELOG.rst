@@ -25,6 +25,17 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.2.0:
+
+0.2.0 - 2024-05-23
+==================
+
+Added
+-----
+
+*   Add a ``cli`` extra.
+*   Add a CLI command, ``sqliteimport bundle``, to assist with database generation.
+
 .. _changelog-0.1.0:
 
 0.1.0 - 2024-05-22
