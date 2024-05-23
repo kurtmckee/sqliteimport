@@ -10,6 +10,13 @@ homepage = "https://github.com/kurtmckee/sqliteimport"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
+click = {version = "^8", optional = true}
+
+[tool.poetry.extras]
+cli = ["click"]
+
+[tool.poetry.scripts]
+sqliteimport = "sqliteimport.cli:group"
 
 [build-system]
 requires = ["poetry-core"]

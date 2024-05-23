@@ -11,18 +11,21 @@ sqliteimport
 
 -------------------------------------------------------------------------------
 
-Demo usage example, using code in `the sqliteimport repository`_:
+Demo usage example, using ``demo.py`` in `the sqliteimport repository`_:
 
 ..  code-block:: bash
+
+    # Ensure sqliteimport is installed with the 'cli' extra.
+    pip install sqliteimport[cli]
 
     # Install 'requests' in a standalone directory.
     pip install --target=sample requests
 
     # Generate a sqlite database containing the installed packages.
-    python generate-sample.py
+    sqliteimport bundle sample sample.sqlite3
 
     # Demonstrate that importing from a database works.
-    python demo.py
+    python demo.py sample.sqlite3
 
 
 This is the output:
@@ -33,8 +36,7 @@ This is the output:
     The requests module object:
     <module 'requests' (sample.sqlite3)>
 
-    First line of the HTML response:
-    <!DOCTYPE html>
+    Requesting a webpage...success!
 
 ..  warning::
 
