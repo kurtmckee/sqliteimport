@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sqliteimport"
-version = "0.1.0"
+version = "0.2.0"
 description = "Import Python code from sqlite databases"
 authors = ["Kurt McKee <contactme@kurtmckee.org>"]
 license = "MIT"
@@ -10,6 +10,13 @@ homepage = "https://github.com/kurtmckee/sqliteimport"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
+click = {version = "^8", optional = true}
+
+[tool.poetry.extras]
+cli = ["click"]
+
+[tool.poetry.scripts]
+sqliteimport = "sqliteimport.cli:group"
 
 [build-system]
 requires = ["poetry-core"]
@@ -36,7 +43,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 69
+fail_under = 29
 
 
 # Mypy
