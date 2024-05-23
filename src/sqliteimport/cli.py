@@ -31,7 +31,7 @@ group = click.Group()
 @click.argument(
     "database", type=click.Path(dir_okay=False, file_okay=False, path_type=pathlib.Path)
 )
-def bundle(directory, database):
+def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
     """Bundle a directory containing Python code into a sqlite database.
 
     The directory can be generated using a package installer like pip.
