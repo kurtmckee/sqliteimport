@@ -58,7 +58,7 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
             files.append((rel_path, False))
 
     connection = sqlite3.connect(database)
-    connection.execute(
+    connection.executescript(
         """
         CREATE TABLE code (
             fullname text,
@@ -66,6 +66,7 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
             is_package boolean,
             source text
         );
+        CREATE INDEX fullname_index ON code (fullname);
         """
     )
 
