@@ -27,7 +27,12 @@ pygments_style = "sphinx"
 # ------------------------
 
 html_theme = "alabaster"
+html_static_path = [
+    "_static",
+]
 html_theme_options = {
+    # "logo": "logo.png",
+    # "logo_name": "sqliteimport",
     # Link to GitHub
     "github_user": "kurtmckee",
     "github_repo": "sqliteimport",
