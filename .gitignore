@@ -2,9 +2,9 @@
 /build/
 /dist/
 /sample/
-/.coverage
-/poetry.lock
+/.coverage*
 
 __pycache__/
+poetry.lock
 *.sqlite3
 *.zip
