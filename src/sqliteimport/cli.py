@@ -74,7 +74,12 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
         print(f"{'* ' if is_package else '  '} {file}")
         if (directory / file).is_dir():
             continue
-        fullname = file.parent if file.name == "__init__.py" else file.with_suffix("")
+        if file.name == "__init__.py":
+            fullname = str(file.parent)
+        elif file.suffix == ".py":
+            fullname = str(file.with_suffix(""))
+        else:
+            fullname = ""
         is_package = file.name == "__init__.py"
         connection.execute(
             """
@@ -82,7 +87,7 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
             VALUES (?, ?, ?, ?);
             """,
             (
-                str(fullname).replace("/", ".").replace("\\", "."),
+                fullname.replace("/", ".").replace("\\", "."),
                 str(file),
                 is_package,
                 (directory / file).read_text(),
