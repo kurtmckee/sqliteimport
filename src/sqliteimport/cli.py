@@ -3,6 +3,8 @@ import sqlite3
 import sys
 import textwrap
 
+from .accessor import Accessor
+
 try:
     import click
 except ImportError:
@@ -52,47 +54,21 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
         if str(rel_path) == "bin":
             continue
         if path.is_dir():
-            files.append((rel_path, (path / "__init__.py").exists()))
+            files.append(rel_path)
             paths.extend(path.glob("*"))
         else:
-            files.append((rel_path, False))
+            files.append(rel_path)
 
     connection = sqlite3.connect(database)
-    connection.executescript(
-        """
-        CREATE TABLE code (
-            fullname text,
-            path text,
-            is_package boolean,
-            source text
-        );
-        CREATE INDEX fullname_index ON code (fullname);
-        """
-    )
+    accessor = Accessor(connection)
+    accessor.initialize_database()
 
-    for file, is_package in sorted(files):
+    for file in sorted(files):
+        is_package = (directory / file / "__init__.py").exists()
         print(f"{'* ' if is_package else '  '} {file}")
         if (directory / file).is_dir():
             continue
-        if file.name == "__init__.py":
-            fullname = str(file.parent)
-        elif file.suffix == ".py":
-            fullname = str(file.with_suffix(""))
-        else:
-            fullname = ""
-        is_package = file.name == "__init__.py"
-        connection.execute(
-            """
-            INSERT INTO code (fullname, path, is_package, source)
-            VALUES (?, ?, ?, ?);
-            """,
-            (
-                fullname.replace("/", ".").replace("\\", "."),
-                str(file),
-                is_package,
-                (directory / file).read_text(),
-            ),
-        ).fetchone()
+        accessor.add_file(directory, file)
 
     connection.commit()
     connection.close()
