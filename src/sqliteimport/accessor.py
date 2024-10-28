@@ -63,3 +63,15 @@ class Accessor:
                 (directory / file).read_text(),
             ),
         )
+
+    def get_file(self, path_like: str) -> str:
+        source: str = self.connection.execute(
+            """
+            SELECT
+                source
+            FROM code
+            WHERE path LIKE ?;
+            """,
+            (path_like,),
+        ).fetchone()[0]
+        return source
