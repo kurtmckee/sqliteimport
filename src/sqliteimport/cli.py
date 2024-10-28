@@ -47,7 +47,7 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
     files = []
     for path in paths:
         rel_path = path.relative_to(directory)
-        if rel_path.suffix in (".dist-info", ".so"):
+        if rel_path.suffix in {".so"}:
             continue
         if rel_path.name == "__pycache__":
             continue

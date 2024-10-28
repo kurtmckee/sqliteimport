@@ -6,12 +6,15 @@ from __future__ import annotations
 
 import importlib.abc
 import importlib.machinery
+import importlib.metadata
 import os.path
 import pathlib
 import sqlite3
 import sys
 import types
 import typing
+
+from sqliteimport.accessor import Accessor
 
 
 class SqliteFinder(importlib.abc.MetaPathFinder):
@@ -23,6 +26,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
             _, _, path = database.execute("PRAGMA database_list;").fetchone()
             self.database = pathlib.Path(path)
             self.connection = database
+        self.accessor = Accessor(self.connection)
 
     def find_spec(
         self,
@@ -44,6 +48,15 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
         )
         return spec
 
+    def find_distributions(
+        self,
+        context: importlib.metadata.DistributionFinder.Context | None = None,
+    ) -> typing.Generator[SqliteDistribution]:
+        if context is None:
+            context = importlib.metadata.DistributionFinder.Context()
+        if context.name is not None:
+            yield SqliteDistribution(context.name, self.connection)
+
 
 class SqliteLoader(importlib.abc.Loader):
     def __init__(self, source: str) -> None:
@@ -62,3 +75,16 @@ def load(database: pathlib.Path | str | sqlite3.Connection) -> None:
             raise FileNotFoundError(f"{database} must exist.")
         database = pathlib.Path(database)
     sys.meta_path.append(SqliteFinder(database))
+
+
+class SqliteDistribution(importlib.metadata.Distribution):
+    def __init__(self, name: str, connection: sqlite3.Connection):
+        self.__name = name
+        self.__connection = connection
+        self.__accessor = Accessor(connection)
+
+    def locate_file(self, path: typing.Any) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def read_text(self, filename: str) -> str:
+        return self.__accessor.get_file(f"{self.__name}-%/{filename}")
