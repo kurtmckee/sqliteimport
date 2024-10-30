@@ -58,7 +58,7 @@ class Accessor:
             """,
             (
                 fullname.replace("/", ".").replace("\\", "."),
-                str(file),
+                str(pathlib.PurePosixPath(file)),
                 is_package,
                 (directory / file).read_text(),
             ),
