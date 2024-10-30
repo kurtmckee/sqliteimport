@@ -78,7 +78,7 @@ def load(database: pathlib.Path | str | sqlite3.Connection) -> None:
 
 
 class SqliteDistribution(importlib.metadata.Distribution):
-    def __init__(self, name: str, connection: sqlite3.Connection):
+    def __init__(self, name: str, connection: sqlite3.Connection) -> None:
         self.__name = name
         self.__connection = connection
         self.__accessor = Accessor(connection)
