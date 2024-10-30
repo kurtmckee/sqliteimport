@@ -1,0 +1,14 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# poetry
+# ------
+
+[tool.poetry]
+name = "module-sqlite"
+version = "2.2.2"
+description = ""
+authors = ["Kurt McKee <contactme@kurtmckee.org>"]
+license = "MIT"
+readme = "README.rst"
