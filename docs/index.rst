@@ -62,9 +62,9 @@ The sqliteimport logo and banner build on others' work.
     License: `CC BY-SA 4.0`_
 
 *   The phrase "sqlite import" in the banner uses the `Dancing Script v2.031`_ font
-    and is designed by `Pablo Impallari <Dancing Script author>`_.
+    and is designed by `Pablo Impallari <Dancing Script author_>`_.
 
-    License: `SIL Open Font License, v1.1 <Dancing Script license>`_
+    License: `SIL Open Font License, v1.1 <Dancing Script license_>`_
 
 *   The phrase "Import Python code from sqlite databases" in the banner uses the `Noto Sans`_ font
     and designed by the `Noto Project`_.
