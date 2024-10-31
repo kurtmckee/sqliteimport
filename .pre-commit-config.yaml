@@ -25,11 +25,16 @@ repos:
       - id: "trailing-whitespace"
 
   - repo: "https://github.com/asottile/pyupgrade"
-    rev: "v3.18.0"
+    rev: "v3.19.0"
     hooks:
       - id: "pyupgrade"
         name: "Enforce Python 3.9+ idioms"
         args: ["--py39-plus"]
+
+  - repo: "https://github.com/sirosen/slyp"
+    rev: "0.8.1"
+    hooks:
+      - id: "slyp"
 
   - repo: "https://github.com/psf/black-pre-commit-mirror"
     rev: "24.10.0"
@@ -58,6 +63,11 @@ repos:
     hooks:
       - id: "check-dependabot"
       - id: "check-readthedocs"
+
+  - repo: "https://github.com/rhysd/actionlint"
+    rev: "v1.7.3"
+    hooks:
+      - id: "actionlint"
 
   - repo: "https://github.com/kurtmckee/pre-commit-hooks"
     rev: "v0.1.1"
