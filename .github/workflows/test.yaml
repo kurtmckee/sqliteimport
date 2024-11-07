@@ -2,6 +2,7 @@ name: "🧪 Test"
 
 on:
   pull_request:
+    null
   push:
     branches:
       - "main"
@@ -30,7 +31,7 @@ jobs:
               - "3.10"
               - "3.11"
               - "3.12"
-            cpython-beta: "3.13"
+              - "3.13"
             pypys:
               - "3.9"
               - "3.10"
