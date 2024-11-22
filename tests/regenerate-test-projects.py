@@ -47,7 +47,7 @@ def build_wheel(directory: pathlib.Path, output: pathlib.Path) -> None:
     """Build a wheel using Poetry."""
 
     command = f"poetry build --format=wheel --directory={directory} --output={output}"
-    subprocess.check_call(command.split())
+    run_command(command.split())
 
 
 def install_wheels(target: pathlib.Path, dist_directory: pathlib.Path) -> None:
@@ -58,7 +58,7 @@ def install_wheels(target: pathlib.Path, dist_directory: pathlib.Path) -> None:
         *f"{sys.executable} -m pip install --target={target}".split(),
         *[str(path) for path in dist_directory.glob("*.whl")],
     ]
-    subprocess.check_call(command)
+    run_command(command)
 
 
 def sanitize_dist_info_records(directory: pathlib.Path) -> None:
@@ -97,6 +97,41 @@ def sanitize_dist_info_records(directory: pathlib.Path) -> None:
                 line = f"{direct_url_json_path},,"
             output.append(line)
         record_file.write_text("\n".join(output), newline=newline)
+
+
+def run_command(command: list[str]) -> None:
+    try:
+        subprocess.run(
+            command,
+            capture_output=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as error:
+        stdout = (error.stdout or b"<NONE>").decode("utf-8", errors="replace")
+        stderr = (error.stderr or b"<NONE>").decode("utf-8", errors="replace")
+        print("COMMAND")
+        print("=======")
+        print()
+        print(" ".join(error.cmd))
+        print()
+        print()
+        print("RETURN CODE")
+        print("===========")
+        print()
+        print(error.returncode)
+        print()
+        print()
+        print("STDOUT")
+        print("======")
+        print()
+        print(stdout)
+        print()
+        print()
+        print("STDERR")
+        print("======")
+        print()
+        print(stderr)
+        raise
 
 
 if __name__ == "__main__":
