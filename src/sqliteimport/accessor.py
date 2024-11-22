@@ -75,3 +75,45 @@ class Accessor:
             (path_like,),
         ).fetchone()[0]
         return source
+
+    def list_directory(self, path_like: str) -> list[str]:
+        """List the contents of a directory."""
+
+        base_name = str(pathlib.PurePosixPath(path_like)).replace("/", ".")
+        sql = """
+            SELECT
+                path
+            FROM code
+            WHERE
+                path LIKE $package_like
+                AND path NOT LIKE $subpackage_like
+
+            UNION
+
+            SELECT
+                DISTINCT substr(
+                    path,
+                    0,
+                    length($package) + instr(substr(path, length($package) + 1), '/')
+                )
+            FROM code
+            WHERE
+                path LIKE $subpackage_like
+            ;
+        """
+
+        results = self.connection.execute(
+            sql,
+            {
+                "package": f"{base_name}/",
+                "package_like": f"{base_name}/%",
+                "subpackage_like": f"{base_name}/%/%",
+            },
+        ).fetchall()
+        parsed_results: list[str] = []
+        for result in results:
+            if result[0].endswith("/__init__.py"):
+                parsed_results.append(result[0].rpartition("/")[0])
+            else:
+                parsed_results.append(result[0])
+        return parsed_results
