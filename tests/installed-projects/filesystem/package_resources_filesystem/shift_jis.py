@@ -1,0 +1,2 @@
+# encoding: shift-jis
+a = "‚ "

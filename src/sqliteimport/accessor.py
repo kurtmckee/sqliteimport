@@ -60,12 +60,12 @@ class Accessor:
                 fullname.replace("/", ".").replace("\\", "."),
                 str(pathlib.PurePosixPath(file)),
                 is_package,
-                (directory / file).read_text(),
+                (directory / file).read_bytes(),
             ),
         )
 
-    def get_file(self, path_like: str) -> str:
-        source: str = self.connection.execute(
+    def get_file(self, path_like: str) -> bytes:
+        source: bytes = self.connection.execute(
             """
             SELECT
                 source

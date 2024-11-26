@@ -4,7 +4,7 @@ ci:
 default_language_version:
   python: "python3.12"
 
-exclude: tests/installed-projects
+exclude: "tests/installed-projects|shift_jis\\.py"
 
 repos:
   - repo: "meta"
