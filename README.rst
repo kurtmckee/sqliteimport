@@ -56,13 +56,13 @@ The sqliteimport logo and banner build on others' work.
 
     License: `CC BY-SA 4.0`_
 
-*   The phrase "sqlite import" in the banner uses the `Dancing Script v2.031`_ font
-    and is designed by `Pablo Impallari <Dancing Script author_>`_.
+*   The phrase "sqlite import" in the banner uses the `Dancing Script v2.031`_ font,
+    designed by `Pablo Impallari <Dancing Script author_>`_.
 
     License: `SIL Open Font License, v1.1 <Dancing Script license_>`_
 
-*   The phrase "Import Python code from sqlite databases" in the banner uses the `Noto Sans`_ font
-    and designed by the `Noto Project`_.
+*   The phrase "Import Python code from sqlite databases" in the banner uses the `Noto Sans`_ font,
+    designed by the `Noto Project`_.
 
     License: `SIL Open Font License, version 1.1 <Noto Sans License_>`_
 
@@ -79,7 +79,7 @@ The sqliteimport logo and banner build on others' work.
 ..  _Emoji 1FAB6: https://openmoji.org/library/emoji-1FAB6/
 ..  _OpenMoji: https://openmoji.org/
 ..  _CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
-..  _Dancing Script v2.031: https://github.com/impallari/DancingScript/tree/7f1738a1e8034404b1985c442af480155c603955
+..  _Dancing Script v2.031: https://github.com/impallari/DancingScript/tree/7f1738a1e8034404b1985c442af480155c603955/fonts/v2031
 ..  _Dancing Script license: https://github.com/impallari/DancingScript/blob/7f1738a1e8034404b1985c442af480155c603955/OFL.txt
 ..  _Dancing Script author: https://github.com/impallari
 ..  _Noto Sans: https://fonts.google.com/noto/specimen/Noto+Sans
