@@ -91,3 +91,16 @@ def test_package_resources(database, import_name):
         content_bytes = path.read_bytes()
     assert content_text.strip() == "resource"
     assert content_bytes.strip() == b"resource"
+
+
+@pytest.mark.parametrize(
+    "import_name",
+    (
+        "package_resources_filesystem.shift_jis",
+        "package_resources_sqlite.shift_jis",
+    ),
+)
+def test_package_resources_shift_jis(database, import_name):
+    module = importlib.import_module(import_name)
+
+    assert module.a == "あ"

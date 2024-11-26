@@ -94,7 +94,7 @@ class SqliteDistribution(importlib.metadata.Distribution):
         raise NotImplementedError()
 
     def read_text(self, filename: str) -> str:
-        return self.__accessor.get_file(f"{self.__name}-%/{filename}")
+        return self.__accessor.get_file(f"{self.__name}-%/{filename}").decode("utf-8")
 
 
 class SqliteTraversableResources(TraversableResources):
@@ -133,7 +133,6 @@ class SqliteTraversable(Traversable):
     def open(
         self,
         mode: typing.Literal["r"] = ...,
-        *,
         encoding: str | None = ...,
         errors: str | None = ...,
     ) -> io.StringIO: ...
@@ -142,25 +141,33 @@ class SqliteTraversable(Traversable):
     def open(
         self,
         mode: typing.Literal["rb"] = ...,
-        *,
         encoding: str | None = ...,
         errors: str | None = ...,
     ) -> io.BytesIO: ...
 
     def open(
-        self, mode: str = "r", *args: typing.Any, **kwargs: typing.Any
+        self,
+        mode: str = "r",
+        encoding: str | None = None,
+        errors: str | None = None,
+        *_: typing.Any,
+        **__: typing.Any,
     ) -> io.StringIO | io.BytesIO:
+        encoding = encoding if encoding is not None else "utf-8"
+        errors = errors if errors is not None else "strict"
         content = self._accessor.get_file(self._path)
         if "b" in mode:
-            return io.BytesIO(content.encode("utf-8"))
+            return io.BytesIO(content)
 
-        return io.StringIO(content)
+        return io.StringIO(content.decode(encoding, errors=errors))
 
     def read_text(self, encoding: str | None = None, errors: str | None = None) -> str:
-        return self._accessor.get_file(self._path)
+        encoding = encoding if encoding is not None else "utf-8"
+        errors = errors if errors is not None else "strict"
+        return self._accessor.get_file(self._path).decode(encoding, errors)
 
     def read_bytes(self) -> bytes:
-        return self._accessor.get_file(self._path).encode("utf-8")
+        return self._accessor.get_file(self._path)
 
     @property
     def name(self) -> str:
