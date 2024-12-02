@@ -33,7 +33,6 @@ jobs:
               - "3.13"
             cpython-beta: "3.14"
             pypys:
-              - "3.9"
               - "3.10"
             cache-key-hash-files:
               - "pyproject.toml"
