@@ -104,3 +104,16 @@ def test_package_resources_shift_jis(database, import_name):
     module = importlib.import_module(import_name)
 
     assert module.a == "あ"
+
+
+@pytest.mark.parametrize(
+    "import_name",
+    (
+        "package_resources_filesystem.あ",
+        "package_resources_sqlite.あ",
+    ),
+)
+def test_package_resources_unicode_filename(database, import_name):
+    module = importlib.import_module(import_name)
+
+    assert module.success == "unicode-filename"
