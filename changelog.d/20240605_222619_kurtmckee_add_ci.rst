@@ -1,4 +1,0 @@
-Development
------------
-
-*   Add CI testing.
