@@ -25,6 +25,73 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.3.0:
+
+0.3.0 - 2025-01-28
+==================
+
+Python support
+--------------
+
+*   Drop Python 3.8 support.
+
+*   Test against Python 3.14 pre-releases.
+
+*   Drop support for PyPy 3.9.
+
+Added
+-----
+
+*   Add a database index to improve import performance.
+
+*   Support calls to ``importlib.metadata.version()``.
+
+*   Partially support accessing resources in packages.
+
+*   Support binary files (like non-UTF-8 Python modules) and resources.
+
+*   Test that Unicode filenames can be imported.
+
+Fixed
+-----
+
+*   Fix a bug in the bundling code that allowed non-Python files to be importable.
+
+    Previously, a package containing a PEP 561 ``py.typed`` file
+    would have an importable submodule named ``{package}.py``.
+
+*   Fix a bug that prevented databases bundled on Windows from finding package metadata.
+
+Changed
+-------
+
+*   Introduce a data access object to manage database interactions.
+*   Create a ``sqliteimport`` table to store metadata about the database.
+
+*   Bundle ``.dist-info/`` metadata directories into databases.
+
+Documentation
+-------------
+
+*   Use an absolute URL to the banner in the README.
+
+    This helps ensure that PyPI releases will render the README consistently.
+
+Development
+-----------
+
+*   Add a script to generate a large Python package for performance testing.
+
+*   Resolve a ``ResourceWarning`` in the test suite on Python 3.13.
+
+*   Add CI testing.
+
+*   Create a framework for testing bundling and importing.
+
+*   Migrate to PEP 621 metadata in ``pyproject.toml``.
+
+*   Create release PRs via a reusable workflow.
+
 .. _changelog-0.2.0:
 
 0.2.0 - 2024-05-23
