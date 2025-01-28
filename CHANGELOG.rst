@@ -33,24 +33,17 @@ Please see the fragment files in the `changelog.d directory`_.
 Python support
 --------------
 
-*   Drop Python 3.8 support.
-
 *   Test against Python 3.14 pre-releases.
-
-*   Drop support for PyPy 3.9.
+*   Drop Python 3.8 support.
+*   Drop PyPy 3.9 support.
 
 Added
 -----
 
 *   Add a database index to improve import performance.
-
 *   Support calls to ``importlib.metadata.version()``.
-
 *   Partially support accessing resources in packages.
-
 *   Support binary files (like non-UTF-8 Python modules) and resources.
-
-*   Test that Unicode filenames can be imported.
 
 Fixed
 -----
@@ -67,7 +60,6 @@ Changed
 
 *   Introduce a data access object to manage database interactions.
 *   Create a ``sqliteimport`` table to store metadata about the database.
-
 *   Bundle ``.dist-info/`` metadata directories into databases.
 
 Documentation
@@ -81,15 +73,11 @@ Development
 -----------
 
 *   Add a script to generate a large Python package for performance testing.
-
+*   Test that Unicode filenames can be imported.
 *   Resolve a ``ResourceWarning`` in the test suite on Python 3.13.
-
 *   Add CI testing.
-
 *   Create a framework for testing bundling and importing.
-
 *   Migrate to PEP 621 metadata in ``pyproject.toml``.
-
 *   Create release PRs via a reusable workflow.
 
 .. _changelog-0.2.0:
