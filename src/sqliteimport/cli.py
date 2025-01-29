@@ -3,6 +3,9 @@ import sqlite3
 import sys
 import textwrap
 
+from . import bundler
+from .accessor import Accessor
+
 try:
     import click
 except ImportError:
@@ -41,52 +44,9 @@ def bundle(directory: pathlib.Path, database: pathlib.Path) -> None:
         pip install --target=DIRECTORY --requirement=path/to/requirements.txt
     """
 
-    paths: list[pathlib.Path] = list(directory.glob("*"))
-    files = []
-    for path in paths:
-        rel_path = path.relative_to(directory)
-        if rel_path.suffix in (".dist-info", ".so"):
-            continue
-        if rel_path.name == "__pycache__":
-            continue
-        if str(rel_path) == "bin":
-            continue
-        if path.is_dir():
-            files.append((rel_path, (path / "__init__.py").exists()))
-            paths.extend(path.glob("*"))
-        else:
-            files.append((rel_path, False))
+    with sqlite3.connect(database) as connection:
+        accessor = Accessor(connection)
+        accessor.initialize_database()
 
-    connection = sqlite3.connect(database)
-    connection.execute(
-        """
-        CREATE TABLE code (
-            fullname text,
-            path text,
-            is_package boolean,
-            source text
-        );
-        """
-    )
-
-    for file, is_package in sorted(files):
-        print(f"{'* ' if is_package else '  '} {file}")
-        if (directory / file).is_dir():
-            continue
-        fullname = file.parent if file.name == "__init__.py" else file.with_suffix("")
-        is_package = file.name == "__init__.py"
-        connection.execute(
-            """
-            INSERT INTO code (fullname, path, is_package, source)
-            VALUES (?, ?, ?, ?);
-            """,
-            (
-                str(fullname).replace("/", ".").replace("\\", "."),
-                str(file),
-                is_package,
-                (directory / file).read_text(),
-            ),
-        ).fetchone()
-
-    connection.commit()
-    connection.close()
+        bundler.bundle(directory, accessor)
+        connection.commit()

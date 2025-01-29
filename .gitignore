@@ -1,9 +1,10 @@
 /.tox/
 /build/
-/dist/
 /sample/
-/.coverage
-/poetry.lock
+/.coverage*
 
 __pycache__/
+dist/
+poetry.lock
 *.sqlite3
+*.zip
