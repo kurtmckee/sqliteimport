@@ -1,5 +1,0 @@
-Changed
--------
-
-*   Introduce a data access object to manage database interactions.
-*   Create a ``sqliteimport`` table to store metadata about the database.
