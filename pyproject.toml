@@ -61,6 +61,17 @@ skip_covered = true
 fail_under = 52
 
 
+# isort
+# -----
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = [
+    "demo.py",
+    "docs/flake8/*",
+    "docs/isort/*",
+]
+
 # mypy
 # ----
 
