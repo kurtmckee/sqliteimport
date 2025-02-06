@@ -25,6 +25,26 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.4.0:
+
+0.4.0 - 2025-02-06
+==================
+
+Added
+-----
+
+*   Auto-load files on the Python path that end with ``.sqlite3``.
+
+Fixed
+-----
+
+*   Pin the build system requirement to ``poetry-core`` v2.
+
+Documentation
+-------------
+
+*   Document compatible flake8 and isort configurations.
+
 .. _changelog-0.3.0:
 
 0.3.0 - 2025-01-29
