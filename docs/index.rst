@@ -46,6 +46,17 @@ This is the output:
     The database format is likely to change as the project matures.
 
 
+Additional pages
+================
+
+..  toctree::
+    :maxdepth: 1
+
+    load
+    flake8/index
+    isort/index
+
+
 Attributions
 ============
 

@@ -1,0 +1,2 @@
+[tool.isort]
+force_to_top = ["sqliteimport"]
