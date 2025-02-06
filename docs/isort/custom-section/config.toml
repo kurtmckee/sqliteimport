@@ -1,0 +1,10 @@
+[tool.isort]
+sections=[
+    "FUTURE",
+    "STDLIB",
+    "SQLITEIMPORT",  # <--- New isort section!
+    "THIRDPARTY",
+    "FIRSTPARTY",
+    "LOCALFOLDER",
+]
+known_sqliteimport=["sqliteimport"]

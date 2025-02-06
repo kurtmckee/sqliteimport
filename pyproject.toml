@@ -1,6 +1,6 @@
 [project]
 name = "sqliteimport"
-version = "0.3.0"
+version = "0.4.0"
 description = "Import Python code from sqlite databases"
 authors = [
     { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
@@ -34,7 +34,7 @@ Homepage = "https://github.com/kurtmckee/sqliteimport"
 sqliteimport = "sqliteimport.cli:group"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 
@@ -60,6 +60,17 @@ source = [
 skip_covered = true
 fail_under = 52
 
+
+# isort
+# -----
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = [
+    "demo.py",
+    "docs/flake8/*",
+    "docs/isort/*",
+]
 
 # mypy
 # ----
