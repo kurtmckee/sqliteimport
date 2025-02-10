@@ -27,8 +27,9 @@ cli = [
 ]
 
 [project.urls]
-Repository = "https://github.com/kurtmckee/sqliteimport"
-Homepage = "https://github.com/kurtmckee/sqliteimport"
+Source = "https://github.com/kurtmckee/sqliteimport"
+Documentation = "https://sqliteimport.readthedocs.io/en/latest/"
+Changelog = "https://sqliteimport.readthedocs.io/en/latest/changelog/"
 
 [project.scripts]
 sqliteimport = "sqliteimport.cli:group"
