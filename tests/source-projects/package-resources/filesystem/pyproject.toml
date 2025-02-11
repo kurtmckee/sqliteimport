@@ -1,18 +1,14 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-
-# poetry
-# ------
-
-[tool.poetry]
+[project]
 name = "package-resources-filesystem"
 version = "1.1.1"
 description = ""
-authors = ["Kurt McKee <contactme@kurtmckee.org>"]
+authors = [
+    { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
+]
 license = "MIT"
 readme = "README.rst"
+requires-python = ">=3.7"
 
-[tool.poetry.dependencies]
-python = ">=3.7"
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

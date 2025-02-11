@@ -1,0 +1,8 @@
+Development
+-----------
+
+*   Fix test project regeneration, which broke when Poetry 2 was released.
+
+    *   Migrate from Poetry to ``build`` to build the test project wheels.
+    *   Pin the regeneration tool dependencies.
+    *   Update the test projects' ``pyproject.toml`` files to use PEP 621 metadata keys.
