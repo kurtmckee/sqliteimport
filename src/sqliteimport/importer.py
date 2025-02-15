@@ -64,7 +64,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
 
 
 class SqliteLoader(importlib.abc.Loader):
-    def __init__(self, code: bytes, accessor: Accessor) -> None:
+    def __init__(self, code: bytes | types.CodeType, accessor: Accessor) -> None:
         self.code = code
         self.accessor = accessor
 
