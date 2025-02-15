@@ -40,8 +40,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
         path: typing.Sequence[str] | None,
         target: types.ModuleType | None = None,
     ) -> importlib.machinery.ModuleSpec | None:
-        query = "SELECT source, is_package FROM code WHERE fullname = ?;"
-        result = self.connection.execute(query, (fullname,)).fetchone()
+        result = self.accessor.find_spec(fullname)
         if result is None:
             return None
 
@@ -65,12 +64,12 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
 
 
 class SqliteLoader(importlib.abc.Loader):
-    def __init__(self, source: str, accessor: Accessor) -> None:
-        self.source = source
+    def __init__(self, code: bytes | types.CodeType, accessor: Accessor) -> None:
+        self.code = code
         self.accessor = accessor
 
     def exec_module(self, module: types.ModuleType) -> None:
-        exec(self.source, module.__dict__)
+        exec(self.code, module.__dict__)
 
     def get_resource_reader(self, fullname: str) -> SqliteTraversableResources:
         return SqliteTraversableResources(fullname, self.accessor)

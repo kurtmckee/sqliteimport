@@ -12,8 +12,6 @@ def bundle(directory: pathlib.Path, accessor: sqliteimport.accessor.Accessor) ->
         rel_path = path.relative_to(directory)
         if rel_path.suffix in {".so"}:
             continue
-        if rel_path.name == "__pycache__":
-            continue
         if str(rel_path) == "bin":
             continue
         if path.is_dir():
