@@ -64,6 +64,19 @@ class Accessor:
             ),
         )
 
+    def find_spec(self, fullname: str) -> tuple[bytes, bool] | None:
+        result: tuple[bytes, bool] | None = self.connection.execute(
+            """
+            SELECT
+                source,
+                is_package
+            FROM code
+            WHERE fullname = ?;
+            """,
+            (fullname,),
+        ).fetchone()
+        return result
+
     def get_file(self, path_like: str) -> bytes:
         source: bytes = self.connection.execute(
             """
