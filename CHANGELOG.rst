@@ -42,16 +42,14 @@ Added
 
     Performance testing on Linux shows that loading from sqlite is now twice as fast.
 
-    The implementation currently binds the sqlite database
-    to the Python version used to bundle it.
+    The implementation is currently inflexible:
+    it binds the sqlite database to the Python version used to bundle it.
 
 Documentation
 -------------
 
 *   Add the changelog and a colophon to the documentation.
-
 *   Configure ReadtheDocs to use the ``dirhtml`` builder.
-
 *   Update the links shown on PyPI.
 
 Development
