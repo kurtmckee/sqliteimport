@@ -44,9 +44,9 @@ def wipe_directory(directory: pathlib.Path) -> None:
 
 
 def build_wheel(directory: pathlib.Path, output: pathlib.Path) -> None:
-    """Build a wheel using Poetry."""
+    """Build a wheel."""
 
-    command = f"poetry build --format=wheel --directory={directory} --output={output}"
+    command = f"{sys.executable} -m build --outdir={output} {directory}"
     run_command(command.split())
 
 

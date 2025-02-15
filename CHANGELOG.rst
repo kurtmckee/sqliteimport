@@ -25,6 +25,46 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.5.0:
+
+0.5.0 - 2025-02-15
+==================
+
+Python support
+--------------
+
+*   Support PyPy 3.11.
+
+Added
+-----
+
+*   Add initial support for bundling and loading Python bytecode (``.pyc`` files).
+
+    Performance testing on Linux shows that loading from sqlite is now twice as fast.
+
+    The implementation is currently inflexible:
+    it binds the sqlite database to the Python version used to bundle it.
+
+Documentation
+-------------
+
+*   Add the changelog and a colophon to the documentation.
+*   Configure ReadtheDocs to use the ``dirhtml`` builder.
+*   Update the links shown on PyPI.
+
+Development
+-----------
+
+*   Fix test project regeneration, which broke when Poetry 2 was released.
+
+    *   Migrate from Poetry to ``build`` to build the test project wheels.
+    *   Pin the regeneration tool dependencies.
+    *   Update the test projects' ``pyproject.toml`` files to use PEP 621 metadata keys.
+
+*   Add a script to log performance comparisons across multiple importers,
+    including source and bytecode files when imported from the filesystem,
+    from sqlite, and from zip files with varying compression levels.
+
 .. _changelog-0.4.0:
 
 0.4.0 - 2025-02-06

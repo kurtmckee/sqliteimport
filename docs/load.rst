@@ -19,7 +19,7 @@ then importing sqliteimport is sufficient to load packages from the database.
 
 
 ..  code-block:: shell
-    :caption: Linux/macos
+    :caption: Linux/macOS
 
     export PYTHONPATH=packages.sqlite3
 

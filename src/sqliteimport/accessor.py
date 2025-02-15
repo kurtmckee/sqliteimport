@@ -4,8 +4,12 @@
 
 from __future__ import annotations
 
+import importlib.util
+import marshal
 import pathlib
 import sqlite3
+import sys
+import types
 
 
 class Accessor:
@@ -44,12 +48,26 @@ class Accessor:
 
         fullname = ""
         is_package = False
+        contents = (directory / file).read_bytes()
 
+        # Source code
         if file.name == "__init__.py":
             is_package = True
+            # "x/y/__init__.py" -> "x/y"
             fullname = str(file.parent)
         elif file.suffix == ".py":
+            # "x/y/z.py" -> "x/y/z"
             fullname = str(file.with_suffix(""))
+
+        # Bytecode
+        elif file.name == f"__init__.{sys.implementation.cache_tag}.pyc":
+            is_package = True
+            # "x/y/__pycache__/__init__.cpython-xyz.pyc" -> "x/y"
+            fullname = str(file.parent.parent)
+        elif file.suffix == ".pyc":
+            suffix_length = sum(len(suffix) for suffix in file.suffixes)
+            # "x/y/__pycache__/z.cpython-xyz.pyc" -> "x/y/z"
+            fullname = str(file.parent.parent / file.name[:-suffix_length])
 
         self.connection.execute(
             """
@@ -60,9 +78,34 @@ class Accessor:
                 fullname.replace("/", ".").replace("\\", "."),
                 str(pathlib.PurePosixPath(file)),
                 is_package,
-                (directory / file).read_bytes(),
+                contents,
             ),
         )
+
+    def find_spec(self, fullname: str) -> tuple[bytes | types.CodeType, bool] | None:
+        result: tuple[bytes, bool] | None = self.connection.execute(
+            """
+            SELECT
+                source,
+                is_package
+            FROM code
+            WHERE fullname = ?
+            ORDER BY
+                LENGTH(path) DESC
+            ;
+            """,
+            (fullname,),
+        ).fetchone()
+        if result is None:
+            return None
+
+        # Byte code
+        code, is_package = result
+        if code.startswith(importlib.util.MAGIC_NUMBER):
+            return marshal.loads(code[16:], allow_code=True), is_package
+
+        # Source
+        return result
 
     def get_file(self, path_like: str) -> bytes:
         source: bytes = self.connection.execute(
