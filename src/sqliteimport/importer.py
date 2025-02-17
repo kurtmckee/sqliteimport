@@ -29,8 +29,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
             self.database = database
             self.connection = sqlite3.connect(database)
         else:  # isinstance(database, sqlite3.Connection)
-            _, _, path = database.execute("PRAGMA database_list;").fetchone()
-            self.database = pathlib.Path(path)
+            self.database = pathlib.Path(Accessor.get_database_path(database))
             self.connection = database
         self.accessor = Accessor(self.connection)
 

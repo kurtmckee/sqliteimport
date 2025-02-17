@@ -43,6 +43,17 @@ class Accessor:
             """
         )
 
+    @staticmethod
+    def get_database_path(database: sqlite3.Connection) -> str:
+        """Get the path to the database, as reported by sqlite itself.
+
+        sqlite returns an empty string if the database is not associated with a file.
+        """
+
+        path: str
+        _, _, path = database.execute("PRAGMA database_list;").fetchone()
+        return path
+
     def add_file(self, directory: pathlib.Path, file: pathlib.Path) -> None:
         """Add a file to the database."""
 
