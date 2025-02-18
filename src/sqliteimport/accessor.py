@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import lzma
 import marshal
 import pathlib
 import sqlite3
@@ -117,7 +118,7 @@ class Accessor:
                 fullname.replace("/", ".").replace("\\", "."),
                 str(pathlib.PurePosixPath(file)),
                 is_package,
-                contents,
+                compress(contents),
             ),
         )
 
@@ -160,7 +161,7 @@ class Accessor:
                 fullname,
                 path,
                 is_package,
-                code,
+                compress(code),
             ),
         )
 
@@ -193,13 +194,14 @@ class Accessor:
         ).fetchone()
         if result is None:
             return None
+        code, is_package = result
+        code = decompress(code)
 
         # Source code
         if self.find_spec_table == "code":
-            return result
+            return code, is_package
 
         # Byte code
-        code, is_package = result
         return marshal.loads(code, allow_code=True), is_package
 
     def get_file(self, path_like: str) -> bytes:
@@ -212,7 +214,7 @@ class Accessor:
             """,
             (path_like,),
         ).fetchone()[0]
-        return contents
+        return decompress(contents)
 
     def list_directory(self, path_like: str) -> list[str]:
         """List the contents of a directory."""
@@ -256,7 +258,7 @@ class Accessor:
                 parsed_results.append(result[0])
         return parsed_results
 
-    def iter_source_code(self) -> typing.Generator[tuple[str, str, bool, str]]:
+    def iter_source_code(self) -> typing.Generator[tuple[str, str, bool, bytes]]:
         cursor = self.connection.cursor()
         iterable = cursor.execute(
             """
@@ -270,4 +272,23 @@ class Accessor:
             ;
             """
         )
-        yield from (row for row in iterable)
+        row: tuple[str, str, bool, bytes]
+        for row in iterable:
+            fullname, path, is_package, contents = row
+            yield fullname, path, is_package, decompress(contents)
+
+
+def compress(data: bytes) -> bytes:
+    return lzma.compress(
+        data,
+        format=lzma.FORMAT_RAW,
+        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+    )
+
+
+def decompress(data: bytes) -> bytes:
+    return lzma.decompress(
+        data,
+        format=lzma.FORMAT_RAW,
+        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+    )
