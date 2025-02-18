@@ -33,17 +33,19 @@ Please see the fragment files in the `changelog.d directory`_.
 Added
 -----
 
+*   Compress all database content using the LZMA algorithm.
+
+    sqliteimport now produces databases that are smaller than importable zip files.
+
 *   Support compiling to, and loading from, pre-compiled bytecode in the database.
 
-    Performance testing on Linux shows that sqliteimport is now faster
-    than the filesystem when loading large dependency trees.
+    Performance testing shows that sqliteimport now imports large dependency trees
+    faster than standard filesystem-based imports.
 
 *   Add a ``sqliteimport compile`` command to compile all Python source to bytecode.
 
     The command should be run for each Python interpreter that will be used
     by the application.
-
-*   Compress all database content using the LZMA algorithm.
 
 Development
 -----------
