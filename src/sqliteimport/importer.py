@@ -20,7 +20,7 @@ if sys.version_info >= (3, 11):
 else:
     from importlib.abc import Traversable, TraversableResources
 
-from sqliteimport.accessor import Accessor
+from .accessor import Accessor
 
 
 class SqliteFinder(importlib.abc.MetaPathFinder):
