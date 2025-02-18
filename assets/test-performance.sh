@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# SPDX-License-Identifier: MIT
 
 set -eu
 
@@ -126,6 +129,7 @@ export FILE_PREFIX="perf.sqlite.bytecode"
 echo "${FILE_PREFIX}"
 export PYTHONPATH="${FILE_PREFIX}.sqlite3"
 PYTHONPROFILEIMPORTTIME="" sqliteimport bundle "build/perftest" "${PYTHONPATH}" 1>/dev/null
+PYTHONPROFILEIMPORTTIME="" sqliteimport compile "${PYTHONPATH}"
 command time --portability --output "${FILE_PREFIX}.time.log" \
     python -c 'import sqliteimport; import a; print(a)' 2> "${FILE_PREFIX}.import.log"
 

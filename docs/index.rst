@@ -27,6 +27,9 @@ Demo usage example, using ``demo.py`` in `the sqliteimport repository`_:
     # Generate a sqlite database containing the installed packages.
     sqliteimport bundle sample sample.sqlite3
 
+    # Compile the Python code in the sqlite database to bytecode.
+    sqliteimport compile sample.sqlite3
+
     # Demonstrate that importing from a database works.
     python demo.py sample.sqlite3
 
@@ -53,6 +56,7 @@ Table of contents
     :maxdepth: 1
 
     load
+    bytecode
     flake8/index
     isort/index
 

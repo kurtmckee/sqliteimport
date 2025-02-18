@@ -1,3 +1,7 @@
+# This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# SPDX-License-Identifier: MIT
+
 $env:PYTHONPROFILEIMPORTTIME=$null
 $env:PYTHONDONTWRITEBYTECODE=1
 
@@ -127,6 +131,7 @@ Write-Host "${env:FILE_PREFIX}"
 $env:PYTHONPATH="${env:FILE_PREFIX}.sqlite3"
 $env:PYTHONPROFILEIMPORTTIME=$null
 sqliteimport bundle "build\perftest" "${env:PYTHONPATH}" | Out-Null
+sqliteimport compile "${PYTHONPATH}"
 $env:PYTHONPROFILEIMPORTTIME=1
 Measure-Command {
     python -c 'import sqliteimport; import a; print(a)' 2> "${env:FILE_PREFIX}.import.log" | Write-Host
