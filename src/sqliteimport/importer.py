@@ -15,12 +15,8 @@ import sys
 import types
 import typing
 
-if sys.version_info >= (3, 11):
-    from importlib.resources.abc import Traversable, TraversableResources
-else:
-    from importlib.abc import Traversable, TraversableResources
-
 from .accessor import Accessor
+from .compat import Traversable, TraversableResources
 
 
 class SqliteFinder(importlib.abc.MetaPathFinder):
