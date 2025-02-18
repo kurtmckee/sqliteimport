@@ -9,6 +9,8 @@ import sys
 __all__ = [
     "marshal_dumps",
     "marshal_loads",
+    "Traversable",
+    "TraversableResources",
 ]
 
 if sys.version_info >= (3, 13):
@@ -19,3 +21,9 @@ if sys.version_info >= (3, 13):
 else:
     marshal_dumps = marshal.dumps
     marshal_loads = marshal.loads
+
+if sys.version_info >= (3, 11):
+    # Python 3.11 moved some abstract base classes.
+    from importlib.resources.abc import Traversable, TraversableResources
+else:
+    from importlib.abc import Traversable, TraversableResources
