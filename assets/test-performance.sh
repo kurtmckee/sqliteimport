@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# SPDX-License-Identifier: MIT
 
 set -eu
 
@@ -25,27 +28,7 @@ command time --portability --output "${FILE_PREFIX}.time.log" \
 # ------------------
 
 echo
-export FILE_PREFIX="perf.zip.source.storeonly"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
-cd "build/perftest"
-zip -qr0 "../../${PYTHONPATH}" .
-cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
-
-echo
-export FILE_PREFIX="perf.zip.source.fast"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
-cd "build/perftest"
-zip -qr1 "../../${PYTHONPATH}" .
-cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
-
-echo
-export FILE_PREFIX="perf.zip.source.best"
+export FILE_PREFIX="perf.zip.source"
 echo "${FILE_PREFIX}"
 export PYTHONPATH="${FILE_PREFIX}.zip"
 cd "build/perftest"
@@ -88,27 +71,7 @@ command time --portability --output "${FILE_PREFIX}.time.log" \
 # ---------------
 
 echo
-export FILE_PREFIX="perf.zip.bytecode.storeonly"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
-cd "build/perftest"
-zip -qr0 "../../${PYTHONPATH}" .
-cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
-
-echo
-export FILE_PREFIX="perf.zip.bytecode.fast"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
-cd "build/perftest"
-zip -qr1 "../../${PYTHONPATH}" .
-cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
-
-echo
-export FILE_PREFIX="perf.zip.bytecode.best"
+export FILE_PREFIX="perf.zip.bytecode"
 echo "${FILE_PREFIX}"
 export PYTHONPATH="${FILE_PREFIX}.zip"
 cd "build/perftest"
@@ -126,6 +89,7 @@ export FILE_PREFIX="perf.sqlite.bytecode"
 echo "${FILE_PREFIX}"
 export PYTHONPATH="${FILE_PREFIX}.sqlite3"
 PYTHONPROFILEIMPORTTIME="" sqliteimport bundle "build/perftest" "${PYTHONPATH}" 1>/dev/null
+PYTHONPROFILEIMPORTTIME="" sqliteimport compile "${PYTHONPATH}"
 command time --portability --output "${FILE_PREFIX}.time.log" \
     python -c 'import sqliteimport; import a; print(a)' 2> "${FILE_PREFIX}.import.log"
 

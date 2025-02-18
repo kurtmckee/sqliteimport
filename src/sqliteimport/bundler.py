@@ -1,9 +1,13 @@
+# This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# SPDX-License-Identifier: MIT
+
 import pathlib
 
-import sqliteimport.accessor
+from .accessor import Accessor
 
 
-def bundle(directory: pathlib.Path, accessor: sqliteimport.accessor.Accessor) -> None:
+def bundle(directory: pathlib.Path, accessor: Accessor) -> None:
     """Bundle files in a directory into a database."""
 
     paths: list[pathlib.Path] = list(directory.glob("*"))
@@ -11,6 +15,8 @@ def bundle(directory: pathlib.Path, accessor: sqliteimport.accessor.Accessor) ->
     for path in paths:
         rel_path = path.relative_to(directory)
         if rel_path.suffix in {".so"}:
+            continue
+        if rel_path.name == "__pycache__":
             continue
         if str(rel_path) == "bin":
             continue
