@@ -3,27 +3,37 @@
 # SPDX-License-Identifier: MIT
 
 import functools
-import marshal
+import marshal as marshal_
 import sys
 import types
 import typing
 
 __all__ = [
     "accommodate_python_39_from_package_behavior",
-    "marshal_dumps",
-    "marshal_loads",
+    "marshal",
     "Traversable",
     "TraversableResources",
 ]
 
-if sys.version_info >= (3, 13):
+
+if sys.version_info < (3, 13):
     # Python 3.13 introduced the `allow_code` parameter,
     # and it is mandatory for the sqliteimport use case.
-    marshal_dumps = functools.partial(marshal.dumps, allow_code=True)
-    marshal_loads = functools.partial(marshal.loads, allow_code=True)
+    # Mimic the Python 3.13 marshal module's function signatures.
+    @functools.wraps(marshal_.dumps)
+    def marshal_dumps(value: types.CodeType, **_: typing.Any) -> bytes:
+        return marshal_.dumps(value)
+
+    @functools.wraps(marshal_.loads)
+    def marshal_loads(value: bytes, **_: typing.Any) -> types.CodeType:
+        return marshal_.loads(value)
+
+    marshal = types.SimpleNamespace()
+    marshal.dumps = marshal_dumps
+    marshal.loads = marshal_loads
 else:
-    marshal_dumps = marshal.dumps
-    marshal_loads = marshal.loads
+    # No-op for Python 3.13 and higher.
+    marshal = marshal_
 
 if sys.version_info >= (3, 11):
     # Python 3.11 moved some abstract base classes.

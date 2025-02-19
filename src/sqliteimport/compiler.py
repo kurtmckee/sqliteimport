@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 from .accessor import Accessor
-from .compat import marshal_dumps
+from .compat import marshal
 from .util import get_magic_number
 
 
@@ -18,7 +18,7 @@ def compile_bytecode(accessor: Accessor) -> None:
     for row in accessor.iter_source_code():
         fullname, path, is_package, source = row
         code = compile(source, filename=path, mode="exec", dont_inherit=True)
-        bytecode = marshal_dumps(code)
+        bytecode = marshal.dumps(code, allow_code=True)
         accessor.add_bytecode(magic_number, fullname, path, is_package, bytecode)
 
     accessor.mark_magic_number(magic_number)

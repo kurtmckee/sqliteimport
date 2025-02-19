@@ -10,7 +10,7 @@ import sqlite3
 import types
 import typing
 
-from .compat import marshal_loads
+from .compat import marshal
 from .util import get_magic_number, get_python_identifier
 
 
@@ -202,7 +202,7 @@ class Accessor:
             return code, is_package
 
         # Byte code
-        return marshal_loads(code), is_package
+        return marshal.loads(code, allow_code=True), is_package
 
     def get_file(self, path_like: str) -> bytes:
         contents: bytes = self.connection.execute(
