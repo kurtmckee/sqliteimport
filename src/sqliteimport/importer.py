@@ -16,7 +16,11 @@ import types
 import typing
 
 from .accessor import Accessor
-from .compat import Traversable, TraversableResources
+from .compat import (
+    Traversable,
+    TraversableResources,
+    accommodate_python_39_from_package_behavior,
+)
 
 
 class SqliteFinder(importlib.abc.MetaPathFinder):
@@ -58,6 +62,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
             yield SqliteDistribution(context.name, self.connection)
 
 
+@accommodate_python_39_from_package_behavior
 class SqliteLoader(importlib.abc.Loader):
     def __init__(self, code: bytes | types.CodeType, accessor: Accessor) -> None:
         self.code = code
@@ -166,32 +171,3 @@ class SqliteTraversable(Traversable):
     @property
     def name(self) -> str:
         return pathlib.PurePosixPath(self._path).name
-
-
-# noinspection PyUnresolvedReferences,PyProtectedMember
-def _patch_python_39_from_package() -> None:
-    # Python 3.9's `from_package()` implementation simply returns a `pathlib.Path`,
-    # so the function must be patched to support sqlite-backed resource access.
-    import functools
-    import importlib._common  # type: ignore[import-not-found]
-
-    original_from_package: typing.Callable[[types.ModuleType], Traversable] = (
-        importlib._common.from_package
-    )
-
-    @functools.wraps(original_from_package)
-    def _from_package(package: types.ModuleType) -> Traversable:
-        spec = package.__spec__
-        if spec is None:
-            return original_from_package(package)
-
-        loader = spec.loader
-        if not isinstance(loader, SqliteLoader):
-            return original_from_package(package)
-        return loader.get_resource_reader(spec.name).files()
-
-    importlib._common.from_package = _from_package
-
-
-if sys.version_info < (3, 10):
-    _patch_python_39_from_package()
