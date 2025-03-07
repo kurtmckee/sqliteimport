@@ -33,6 +33,7 @@ Changelog = "https://sqliteimport.readthedocs.io/en/latest/changelog/"
 
 [project.scripts]
 sqliteimport = "sqliteimport.cli:group"
+si = "sqliteimport.cli:group"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
