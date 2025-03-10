@@ -10,7 +10,7 @@ import sqlite3
 import types
 import typing
 
-from .compat import marshal_loads
+from .compat import marshal
 from .util import get_magic_number, get_python_identifier
 
 
@@ -202,7 +202,7 @@ class Accessor:
             return code, is_package
 
         # Byte code
-        return marshal_loads(code), is_package
+        return marshal.loads(code, allow_code=True), is_package
 
     def get_file(self, path_like: str) -> bytes:
         contents: bytes = self.connection.execute(
@@ -276,6 +276,36 @@ class Accessor:
         for row in iterable:
             fullname, path, is_package, contents = row
             yield fullname, path, is_package, decompress(contents)
+
+    def iter_package_metadata(self) -> typing.Generator[bytes]:
+        """Find and return all METADATA files in `.dist-info/` directories."""
+
+        cursor = self.connection.cursor()
+        iterable = cursor.execute(
+            """
+            SELECT
+                contents
+            FROM code
+            WHERE path LIKE '%.dist-info/METADATA'
+            ;
+            """
+        )
+        row: tuple[bytes]
+        for row in iterable:
+            contents = row[0]
+            yield decompress(contents)
+
+    def get_database_metadata(self) -> list[tuple[str, str]]:
+        """Get all rows from the ``sqliteimport`` table."""
+
+        sql = """
+            SELECT
+                field,
+                value
+            FROM sqliteimport
+            ;
+        """
+        return self.connection.execute(sql).fetchall()
 
 
 def compress(data: bytes) -> bytes:

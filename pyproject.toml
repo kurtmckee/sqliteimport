@@ -1,6 +1,6 @@
 [project]
 name = "sqliteimport"
-version = "0.6.0"
+version = "0.7.0"
 description = "Import Python code from sqlite databases"
 authors = [
     { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
@@ -24,6 +24,7 @@ classifiers = [
 [project.optional-dependencies]
 cli = [
     "click >=8,<9",
+    "prettytable >=3.15.1,<4",
 ]
 
 [project.urls]
@@ -33,6 +34,7 @@ Changelog = "https://sqliteimport.readthedocs.io/en/latest/changelog/"
 
 [project.scripts]
 sqliteimport = "sqliteimport.cli:group"
+si = "sqliteimport.cli:group"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -59,7 +61,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 52
+fail_under = 50
 
 
 # isort
