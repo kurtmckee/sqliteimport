@@ -33,9 +33,8 @@ Please see the fragment files in the `changelog.d directory`_.
 Added
 -----
 
-*   Add an alias for the CLI ``sqliteimport`` command: ``si``.
-
 *   Add a subcommand, ``describe``, to print info about a database.
+*   Add an alias for the CLI ``sqliteimport`` command: ``si``.
 
 Development
 -----------
