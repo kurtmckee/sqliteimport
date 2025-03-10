@@ -25,6 +25,23 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.7.0:
+
+0.7.0 - 2025-03-10
+==================
+
+Added
+-----
+
+*   Add an alias for the CLI ``sqliteimport`` command: ``si``.
+
+*   Add a subcommand, ``describe``, to print info about a database.
+
+Development
+-----------
+
+*   Improve the isolation of compatibility code.
+
 .. _changelog-0.6.0:
 
 0.6.0 - 2025-02-18
