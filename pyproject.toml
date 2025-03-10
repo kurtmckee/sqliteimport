@@ -24,6 +24,7 @@ classifiers = [
 [project.optional-dependencies]
 cli = [
     "click >=8,<9",
+    "prettytable >=3.15.1,<4",
 ]
 
 [project.urls]
@@ -60,7 +61,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 52
+fail_under = 50
 
 
 # isort

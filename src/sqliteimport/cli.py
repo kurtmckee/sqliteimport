@@ -2,10 +2,13 @@
 # Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
 # SPDX-License-Identifier: MIT
 
+import itertools
 import pathlib
 import sqlite3
 import sys
 import textwrap
+
+import prettytable
 
 from . import bundler, compiler
 from .accessor import Accessor
@@ -91,3 +94,63 @@ def compile_(database: pathlib.Path) -> None:
 
         compiler.compile_bytecode(accessor)
         connection.commit()
+
+
+@group.command(name="describe", no_args_is_help=True)
+@click.argument(
+    "database", type=click.Path(dir_okay=False, file_okay=True, path_type=pathlib.Path)
+)
+def describe(database: pathlib.Path) -> None:
+    """Show information about the given database."""
+
+    table = prettytable.PrettyTable()
+    table.set_style(prettytable.TableStyle.DEFAULT)
+
+    with sqlite3.connect(database) as connection:
+        accessor = Accessor(connection)
+
+        database_metadata = accessor.get_database_metadata()
+        table.align = "l"
+        table.field_names = ("Field", "Value")
+        table.add_rows(database_metadata)  # type: ignore[arg-type]
+        print("Database info:")
+        print()
+        print(table)
+
+        magic_numbers = accessor.get_magic_numbers()
+        print()
+        if magic_numbers:
+            table.field_names = ("Magic Number", "Python interpreter")
+            table.add_rows(list(magic_numbers.items()))  # type: ignore[arg-type]
+            table.align = "l"
+            print("The source code has been pre-compiled to bytecode.")
+            print()
+            print("The bytecode magic numbers are shown below,")
+            print("along with the Python interpreter used for compilation:")
+            print()
+            print(textwrap.indent(str(table), "    "))
+        else:
+            print("The source code has not been pre-compiled to bytecode.")
+
+        lines: list[list[str]] = []
+        for metadata_raw in accessor.iter_package_metadata():
+            metadata = metadata_raw.decode("utf-8", errors="ignore")
+            name = ""
+            version = ""
+            for line in itertools.takewhile(lambda s: bool(s), metadata.splitlines()):
+                if line.startswith("Name: "):
+                    name = line[len("Name: ") :].strip()
+                elif line.startswith("Version: "):
+                    version = line[len("Version: ") :].strip()
+            if name and version:
+                lines.append([name, version])
+
+        print()
+        if lines:
+            table.clear()
+            table.field_names = ("Package", "Version")
+            table.add_rows(lines)
+            table.align = "l"
+            print(table)
+        else:
+            print("No installed packages were found.")

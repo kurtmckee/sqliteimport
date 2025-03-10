@@ -277,6 +277,36 @@ class Accessor:
             fullname, path, is_package, contents = row
             yield fullname, path, is_package, decompress(contents)
 
+    def iter_package_metadata(self) -> typing.Generator[bytes]:
+        """Find and return all METADATA files in `.dist-info/` directories."""
+
+        cursor = self.connection.cursor()
+        iterable = cursor.execute(
+            """
+            SELECT
+                contents
+            FROM code
+            WHERE path LIKE '%.dist-info/METADATA'
+            ;
+            """
+        )
+        row: tuple[bytes]
+        for row in iterable:
+            contents = row[0]
+            yield decompress(contents)
+
+    def get_database_metadata(self) -> list[tuple[str, str]]:
+        """Get all rows from the ``sqliteimport`` table."""
+
+        sql = """
+            SELECT
+                field,
+                value
+            FROM sqliteimport
+            ;
+        """
+        return self.connection.execute(sql).fetchall()
+
 
 def compress(data: bytes) -> bytes:
     return lzma.compress(
