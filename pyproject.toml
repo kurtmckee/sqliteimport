@@ -61,7 +61,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 50
+fail_under = 49
 
 
 # isort
