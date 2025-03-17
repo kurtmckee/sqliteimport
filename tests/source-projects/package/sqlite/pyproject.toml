@@ -1,5 +1,5 @@
 [project]
-name = "package-resources-sqlite"
+name = "package-sqlite"
 version = "2.2.2"
 description = ""
 authors = [
