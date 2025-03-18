@@ -54,7 +54,7 @@ repos:
           - "flake8-bugbear==24.12.12"
 
   - repo: "https://github.com/editorconfig-checker/editorconfig-checker"
-    rev: "v3.2.0"
+    rev: "v3.2.1"
     hooks:
       - id: "editorconfig-checker"
 
