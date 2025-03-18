@@ -39,7 +39,6 @@ Fixed
 -----
 
 *   Fix a bug, and inconsistencies, in the ``describe`` command output.
-
 *   Verify a distribution package exists in the database before claiming it does.
 
 .. _changelog-0.7.0:
