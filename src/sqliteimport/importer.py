@@ -58,8 +58,17 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
     ) -> typing.Generator[SqliteDistribution]:
         if context is None:
             context = importlib.metadata.DistributionFinder.Context()
-        if context.name is not None:
-            yield SqliteDistribution(context.name, self.connection)
+        if context.name is None:
+            return
+
+        # Determine if the distribution exists.
+        # This try/except block is an inelegant conditional.
+        try:
+            self.accessor.get_file(f"{context.name}-%.dist-info/METADATA")
+        except TypeError:
+            return
+
+        yield SqliteDistribution(context.name, self.connection)
 
 
 @accommodate_python_39_from_package_behavior
