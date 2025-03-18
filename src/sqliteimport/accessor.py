@@ -94,6 +94,26 @@ class Accessor:
         ).fetchall()
         return {row[0]: row[1] for row in magic_numbers}
 
+    def add_directory(self, directory: pathlib.Path) -> None:
+        """Add an importable directory (such as a namespace) to the database."""
+
+        fullname = str(directory)
+        is_package = True
+        contents = b""
+
+        self.connection.execute(
+            """
+            INSERT INTO code (fullname, path, is_package, contents)
+            VALUES (?, ?, ?, ?);
+            """,
+            (
+                fullname.replace("/", ".").replace("\\", "."),
+                str(pathlib.PurePosixPath(directory)),
+                is_package,
+                compress(contents),
+            ),
+        )
+
     def add_file(self, directory: pathlib.Path, file: pathlib.Path) -> None:
         """Add a file to the database."""
 
