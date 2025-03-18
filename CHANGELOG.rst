@@ -25,6 +25,22 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.8.0:
+
+0.8.0 - 2025-03-18
+==================
+
+Added
+-----
+
+*   Support namespace packages.
+
+Fixed
+-----
+
+*   Fix a bug, and inconsistencies, in the ``describe`` command output.
+*   Verify a distribution package exists in the database before claiming it does.
+
 .. _changelog-0.7.0:
 
 0.7.0 - 2025-03-10

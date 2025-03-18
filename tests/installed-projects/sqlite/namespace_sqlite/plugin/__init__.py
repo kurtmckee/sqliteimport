@@ -1,0 +1,1 @@
+g = globals().copy()

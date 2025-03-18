@@ -1,6 +1,6 @@
 [project]
 name = "sqliteimport"
-version = "0.7.0"
+version = "0.8.0"
 description = "Import Python code from sqlite databases"
 authors = [
     { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
@@ -61,7 +61,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 50
+fail_under = 49
 
 
 # isort

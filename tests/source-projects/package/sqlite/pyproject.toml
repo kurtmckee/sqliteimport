@@ -1,0 +1,14 @@
+[project]
+name = "package-sqlite"
+version = "2.2.2"
+description = ""
+authors = [
+    { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
+]
+license = "MIT"
+readme = "README.rst"
+requires-python = ">=3.7"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

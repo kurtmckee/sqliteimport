@@ -115,11 +115,12 @@ def describe(database: pathlib.Path) -> None:
         table.add_rows(database_metadata)  # type: ignore[arg-type]
         print("Database info:")
         print()
-        print(table)
+        print(textwrap.indent(str(table), "    "))
 
         magic_numbers = accessor.get_magic_numbers()
         print()
         if magic_numbers:
+            table.clear()
             table.field_names = ("Magic Number", "Python interpreter")
             table.add_rows(list(magic_numbers.items()))  # type: ignore[arg-type]
             table.align = "l"
@@ -151,6 +152,8 @@ def describe(database: pathlib.Path) -> None:
             table.field_names = ("Package", "Version")
             table.add_rows(lines)
             table.align = "l"
-            print(table)
+            print("The following packages are installed in the database:")
+            print()
+            print(textwrap.indent(str(table), "    "))
         else:
             print("No installed packages were found.")
