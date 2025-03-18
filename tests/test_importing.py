@@ -4,6 +4,7 @@ import importlib.resources
 import pathlib
 import sqlite3
 import sys
+import uuid
 
 import pytest
 
@@ -117,3 +118,24 @@ def test_package_unicode_filename(database, import_name):
     module = importlib.import_module(import_name)
 
     assert module.success == "unicode-filename"
+
+
+@pytest.mark.parametrize(
+    "namespace, package, version",
+    (
+        ("namespace_filesystem", "plugin", "1.1.1"),
+        ("namespace_sqlite", "plugin", "2.2.2"),
+    ),
+)
+def test_namespace_package(database, namespace, package, version):
+    module = importlib.import_module(f"{namespace}.{package}")
+    assert isinstance(module.g, dict)
+    assert importlib.metadata.version(f"{namespace}_{package}") == version
+
+
+def test_distribution_finding(database):
+    """Verify that sqliteimport doesn't discover packages it isn't responsible for."""
+
+    name = f"p{uuid.uuid4().hex}"
+    discovered = list(sqliteimport.importer.SqliteDistribution.discover(name=name))
+    assert discovered == []
