@@ -27,8 +27,21 @@ def bundle(directory: pathlib.Path, accessor: Accessor) -> None:
             files.append(rel_path)
 
     for file in sorted(files):
-        is_package = (directory / file / "__init__.py").exists()
-        print(f"{'* ' if is_package else '  '} {file}")
-        if (directory / file).is_dir():
-            continue
-        accessor.add_file(directory, file)
+        path = directory / file
+        if path.is_file():
+            print(f"   {file}")
+            accessor.add_file(directory, file)
+        elif path.is_dir():
+            # Directories *might* be importable namespaces.
+            # If so, the current database design requires an entry in the database.
+
+            # Ignore directories that appear to be true packages.
+            if (path / "__init__.py").exists():
+                continue
+
+            # Ignore directories that cannot be imported.
+            if not all(part.isidentifier() for part in file.parts):
+                continue
+
+            print(f"*  {file}")
+            accessor.add_directory(file)

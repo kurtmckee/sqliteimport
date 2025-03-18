@@ -4,6 +4,7 @@ import importlib.resources
 import pathlib
 import sqlite3
 import sys
+import uuid
 
 import pytest
 
@@ -42,11 +43,11 @@ def test_module(database, import_name, version):
 @pytest.mark.parametrize(
     "import_name",
     (
-        "package_resources_filesystem",
-        "package_resources_sqlite",
+        "package_filesystem",
+        "package_sqlite",
     ),
 )
-def test_package_resources(database, import_name):
+def test_package(database, import_name):
     module = importlib.import_module(import_name)
 
     # Python 3.11 and 3.12 (but not 3.13) throw DeprecationWarning when calling
@@ -96,11 +97,11 @@ def test_package_resources(database, import_name):
 @pytest.mark.parametrize(
     "import_name",
     (
-        "package_resources_filesystem.shift_jis",
-        "package_resources_sqlite.shift_jis",
+        "package_filesystem.shift_jis",
+        "package_sqlite.shift_jis",
     ),
 )
-def test_package_resources_shift_jis(database, import_name):
+def test_package_shift_jis(database, import_name):
     module = importlib.import_module(import_name)
 
     assert module.a == "あ"
@@ -109,11 +110,32 @@ def test_package_resources_shift_jis(database, import_name):
 @pytest.mark.parametrize(
     "import_name",
     (
-        "package_resources_filesystem.あ",
-        "package_resources_sqlite.あ",
+        "package_filesystem.あ",
+        "package_sqlite.あ",
     ),
 )
-def test_package_resources_unicode_filename(database, import_name):
+def test_package_unicode_filename(database, import_name):
     module = importlib.import_module(import_name)
 
     assert module.success == "unicode-filename"
+
+
+@pytest.mark.parametrize(
+    "namespace, package, version",
+    (
+        ("namespace_filesystem", "plugin", "1.1.1"),
+        ("namespace_sqlite", "plugin", "2.2.2"),
+    ),
+)
+def test_namespace_package(database, namespace, package, version):
+    module = importlib.import_module(f"{namespace}.{package}")
+    assert isinstance(module.g, dict)
+    assert importlib.metadata.version(f"{namespace}_{package}") == version
+
+
+def test_distribution_finding(database):
+    """Verify that sqliteimport doesn't discover packages it isn't responsible for."""
+
+    name = f"p{uuid.uuid4().hex}"
+    discovered = list(sqliteimport.importer.SqliteDistribution.discover(name=name))
+    assert discovered == []
