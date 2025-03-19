@@ -50,6 +50,12 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
             origin=self.database.name,
             is_package=is_package,
         )
+        spec.has_location = True
+        if isinstance(source, types.CodeType):
+            spec.cached = self.database.name
+        else:
+            spec.cached = None
+
         return spec
 
     def find_distributions(
