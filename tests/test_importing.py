@@ -1,9 +1,11 @@
 import contextlib
+import importlib.machinery
 import importlib.metadata
 import importlib.resources
 import pathlib
 import sqlite3
 import sys
+import types
 import uuid
 
 import pytest
@@ -36,8 +38,34 @@ def database():
 )
 def test_module(database, import_name, version):
     module = importlib.import_module(import_name)
+    assert isinstance(module, types.ModuleType)
     assert module.x == "module"
     assert importlib.metadata.version(import_name) == version
+
+    assert module.__name__ == import_name
+    assert module.__doc__ is None
+    if sys.version_info >= (3, 10):
+        assert module.__annotations__ == {}
+    else:
+        # Python 3.9 doesn't have an `__annotations__` object at the module level.
+        assert not hasattr(module, "__annotations__")
+
+    if hasattr(module, "__cached__"):
+        assert isinstance(module.__cached__, str)
+    assert isinstance(module.__file__, str)
+    assert module.__loader__ is not None
+    assert module.__package__ == ""
+    assert not hasattr(module, "__path__")
+
+    # The Python documentation has strong recommendations for accessing these globals.
+    # Ensure that imported modules can follow the strong recommendations.
+    assert isinstance(module.__spec__, importlib.machinery.ModuleSpec)
+    if hasattr(module, "__cached__"):
+        assert module.__cached__ == module.__spec__.cached
+    assert module.__file__ == module.__spec__.origin
+    assert module.__loader__ == module.__spec__.loader
+    assert module.__package__ == module.__spec__.parent
+    assert module.__spec__.submodule_search_locations is None
 
 
 @pytest.mark.parametrize(
@@ -48,6 +76,42 @@ def test_module(database, import_name, version):
     ),
 )
 def test_package(database, import_name):
+    module = importlib.import_module(import_name)
+
+    assert module.__name__ == import_name
+    assert module.__doc__ is None
+    if sys.version_info >= (3, 10):
+        assert module.__annotations__ == {}
+    else:
+        # Python 3.9 doesn't have an `__annotations__` object at the module level.
+        assert not hasattr(module, "__annotations__")
+
+    if hasattr(module, "__cached__"):
+        assert isinstance(module.__cached__, str)
+    assert isinstance(module.__file__, str)
+    assert module.__loader__ is not None
+    assert module.__package__ == import_name
+    assert hasattr(module, "__path__")
+
+    # The Python documentation has strong recommendations for accessing these globals.
+    # Ensure that imported modules can follow the strong recommendations.
+    assert isinstance(module.__spec__, importlib.machinery.ModuleSpec)
+    if hasattr(module, "__cached__"):
+        assert module.__cached__ == module.__spec__.cached
+    assert module.__file__ == module.__spec__.origin
+    assert module.__loader__ == module.__spec__.loader
+    assert module.__package__ == module.__spec__.parent
+    assert isinstance(module.__spec__.submodule_search_locations, list)
+
+
+@pytest.mark.parametrize(
+    "import_name",
+    (
+        "package_filesystem",
+        "package_sqlite",
+    ),
+)
+def test_package_resources(database, import_name):
     module = importlib.import_module(import_name)
 
     # Python 3.11 and 3.12 (but not 3.13) throw DeprecationWarning when calling
@@ -131,6 +195,31 @@ def test_namespace_package(database, namespace, package, version):
     module = importlib.import_module(f"{namespace}.{package}")
     assert isinstance(module.g, dict)
     assert importlib.metadata.version(f"{namespace}_{package}") == version
+
+    assert module.__name__ == f"{namespace}.{package}"
+    assert module.__doc__ is None
+    if sys.version_info >= (3, 10):
+        assert module.__annotations__ == {}
+    else:
+        # Python 3.9 doesn't have an `__annotations__` object at the module level.
+        assert not hasattr(module, "__annotations__")
+
+    if hasattr(module, "__cached__"):
+        assert isinstance(module.__cached__, str)
+    assert isinstance(module.__file__, str)
+    assert module.__loader__ is not None
+    assert module.__package__ == f"{namespace}.{package}"
+    assert hasattr(module, "__path__")
+
+    # The Python documentation has strong recommendations for accessing these globals.
+    # Ensure that imported modules can follow the strong recommendations.
+    assert isinstance(module.__spec__, importlib.machinery.ModuleSpec)
+    if hasattr(module, "__cached__"):
+        assert module.__cached__ == module.__spec__.cached
+    assert module.__file__ == module.__spec__.origin
+    assert module.__loader__ == module.__spec__.loader
+    assert module.__package__ == module.__spec__.parent
+    assert isinstance(module.__spec__.submodule_search_locations, list)
 
 
 def test_distribution_finding(database):
