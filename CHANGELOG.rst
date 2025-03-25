@@ -25,6 +25,16 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.10.0:
+
+0.10.0 - 2025-03-25
+===================
+
+Added
+-----
+
+*   Add preliminary support for displaying files and source lines in tracebacks.
+
 .. _changelog-0.9.0:
 
 0.9.0 - 2025-03-19
