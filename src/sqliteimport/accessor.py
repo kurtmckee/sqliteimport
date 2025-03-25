@@ -200,10 +200,13 @@ class Accessor:
             },
         )
 
-    def find_spec(self, fullname: str) -> tuple[bytes | types.CodeType, bool] | None:
-        result: tuple[bytes, bool] | None = self.connection.execute(
+    def find_spec(
+        self, fullname: str
+    ) -> tuple[str, bytes | types.CodeType, bool] | None:
+        result: tuple[str, bytes, bool] | None = self.connection.execute(
             f"""
             SELECT
+                path,
                 contents,
                 is_package
             FROM {self.find_spec_table}
@@ -214,26 +217,47 @@ class Accessor:
         ).fetchone()
         if result is None:
             return None
-        code, is_package = result
+        path, code, is_package = result
         code = decompress(code)
 
         # Source code
         if self.find_spec_table == "code":
-            return code, is_package
+            return path, code, is_package
 
         # Byte code
-        return marshal.loads(code, allow_code=True), is_package
+        return path, marshal.loads(code, allow_code=True), is_package
 
-    def get_file(self, path_like: str) -> bytes:
-        contents: bytes = self.connection.execute(
-            """
-            SELECT
-                contents
-            FROM code
-            WHERE path LIKE ?;
-            """,
-            (path_like,),
-        ).fetchone()[0]
+    @typing.overload
+    def get_file(self, *, path: str) -> bytes: ...
+
+    @typing.overload
+    def get_file(self, *, fullname: str) -> bytes: ...
+
+    def get_file(
+        self, *, path: str | None = None, fullname: str | None = None
+    ) -> bytes:
+        contents: bytes
+        if path:
+            contents = self.connection.execute(
+                """
+                SELECT
+                    contents
+                FROM code
+                WHERE path LIKE ?;
+                """,
+                (path,),
+            ).fetchone()[0]
+        else:  # fullname
+            contents = self.connection.execute(
+                """
+                SELECT
+                    contents
+                FROM code
+                WHERE fullname LIKE ?;
+                """,
+                (fullname,),
+            ).fetchone()[0]
+
         return decompress(contents)
 
     def list_directory(self, path_like: str) -> list[str]:

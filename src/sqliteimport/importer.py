@@ -12,6 +12,7 @@ import os.path
 import pathlib
 import sqlite3
 import sys
+import tokenize
 import types
 import typing
 
@@ -43,10 +44,14 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
         if result is None:
             return None
 
-        source, is_package = result
+        path, source, is_package = result
+        if isinstance(source, types.CodeType):
+            code = source
+        else:  # isinstance(source, bytes)
+            code = compile(source, filename=path, mode="exec", dont_inherit=True)
         spec = importlib.machinery.ModuleSpec(
             name=fullname,
-            loader=SqliteLoader(source, self.accessor),
+            loader=SqliteLoader(code, self.accessor),
             origin=self.database.name,
             is_package=is_package,
         )
@@ -70,7 +75,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
         # Determine if the distribution exists.
         # This try/except block is an inelegant conditional.
         try:
-            self.accessor.get_file(f"{context.name}-%.dist-info/METADATA")
+            self.accessor.get_file(path=f"{context.name}-%.dist-info/METADATA")
         except TypeError:
             return
 
@@ -78,8 +83,8 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
 
 
 @accommodate_python_39_from_package_behavior
-class SqliteLoader(importlib.abc.Loader):
-    def __init__(self, code: bytes | types.CodeType, accessor: Accessor) -> None:
+class SqliteLoader(importlib.abc.InspectLoader):
+    def __init__(self, code: types.CodeType, accessor: Accessor) -> None:
         self.code = code
         self.accessor = accessor
 
@@ -88,6 +93,11 @@ class SqliteLoader(importlib.abc.Loader):
 
     def get_resource_reader(self, fullname: str) -> SqliteTraversableResources:
         return SqliteTraversableResources(fullname, self.accessor)
+
+    def get_source(self, fullname: str) -> str:
+        raw_content = self.accessor.get_file(fullname=fullname)
+        encoding, _ = tokenize.detect_encoding(io.BytesIO(raw_content).readline)
+        return raw_content.decode(encoding)
 
 
 def load(database: pathlib.Path | str | sqlite3.Connection) -> None:
@@ -108,7 +118,8 @@ class SqliteDistribution(importlib.metadata.Distribution):
         raise NotImplementedError()
 
     def read_text(self, filename: str) -> str:
-        return self.__accessor.get_file(f"{self.__name}-%/{filename}").decode("utf-8")
+        raw_content = self.__accessor.get_file(path=f"{self.__name}-%/{filename}")
+        return raw_content.decode("utf-8")
 
 
 class SqliteTraversableResources(TraversableResources):
@@ -169,7 +180,7 @@ class SqliteTraversable(Traversable):
     ) -> io.StringIO | io.BytesIO:
         encoding = encoding if encoding is not None else "utf-8"
         errors = errors if errors is not None else "strict"
-        content = self._accessor.get_file(self._path)
+        content = self._accessor.get_file(path=self._path)
         if "b" in mode:
             return io.BytesIO(content)
 
@@ -178,10 +189,10 @@ class SqliteTraversable(Traversable):
     def read_text(self, encoding: str | None = None, errors: str | None = None) -> str:
         encoding = encoding if encoding is not None else "utf-8"
         errors = errors if errors is not None else "strict"
-        return self._accessor.get_file(self._path).decode(encoding, errors)
+        return self._accessor.get_file(path=self._path).decode(encoding, errors)
 
     def read_bytes(self) -> bytes:
-        return self._accessor.get_file(self._path)
+        return self._accessor.get_file(path=self._path)
 
     @property
     def name(self) -> str:
