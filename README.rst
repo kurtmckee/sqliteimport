@@ -5,7 +5,7 @@
 
 
 ..  image:: https://raw.githubusercontent.com/kurtmckee/sqliteimport/dfd7095f2df8d6e9249889dd85f102027d1a6cfb/docs/_static/banner.png
-    :alt: sqlite import: Import Python code in sqlite databases.
+    :alt: sqlite import: Import Python code from sqlite databases.
 
 -------------------------------------------------------------------------------
 
