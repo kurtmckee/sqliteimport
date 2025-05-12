@@ -98,11 +98,11 @@ def test_package(database, import_name):
 def test_package_resources(database, import_name):
     module = importlib.import_module(import_name)
 
-    # Python 3.11 and 3.12 (but not 3.13) throw DeprecationWarning when calling
+    # Between 3.11 and 3.12.9, Python would throw DeprecationWarning when calling
     # `importlib.resources.read_text()` and `importlib.resources.read_bytes()`.
     # These are caught, confirmed to match expectations, and wholly ignored.
     ignore_tempermental_warnings = contextlib.nullcontext()
-    if sys.version_info[:2] in ((3, 11), (3, 12)):
+    if (3, 11) < sys.version_info[:3] <= (3, 12, 9):
         ignore_tempermental_warnings = pytest.warns(
             DeprecationWarning,
             match=(
