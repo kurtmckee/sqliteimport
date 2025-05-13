@@ -61,7 +61,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 49
+fail_under = 60
 
 
 # isort
@@ -74,6 +74,7 @@ extend_skip_glob = [
     "docs/flake8/*",
     "docs/isort/*",
 ]
+
 
 # mypy
 # ----
