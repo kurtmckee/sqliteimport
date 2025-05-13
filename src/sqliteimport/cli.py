@@ -8,27 +8,25 @@ import sqlite3
 import sys
 import textwrap
 
-import prettytable
-
 from . import bundler, compiler
 from .accessor import Accessor
 from .util import get_magic_number
 
 try:
     import click
+    import prettytable
 except ImportError:
-    print(
-        textwrap.dedent(
-            """
-            sqliteimport is not installed with CLI support.
+    message = """
+        sqliteimport is not installed with CLI support.
 
-            This is typically resolved by adding '[cli]' to the end of the package name
-            when installing sqliteimport. For example:
+        This is typically resolved by adding '[cli]' to the end of the package name
+        when installing sqliteimport. Example commands that may resolve this:
 
-                python -m pip install sqliteimport[cli]
-            """
-        )
-    )
+        *   python -m pip install sqliteimport[cli]
+        *   pipx install sqliteimport[cli]
+    """
+
+    print(textwrap.dedent(message), file=sys.stderr)
     sys.exit(2)
 
 
