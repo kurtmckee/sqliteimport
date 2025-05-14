@@ -76,7 +76,7 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
         # This try/except block is an inelegant conditional.
         try:
             self.accessor.get_file(path=f"{context.name}-%.dist-info/METADATA")
-        except TypeError:
+        except FileNotFoundError:
             return
 
         yield SqliteDistribution(context.name, self.connection)
