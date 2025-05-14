@@ -25,6 +25,31 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.11.0:
+
+0.11.0 - 2025-05-14
+===================
+
+Fixed
+-----
+
+*   Fix a crash that occurs when CLI extras are not installed.
+
+    This restores the user-friendly warning message behavior
+    when ``[cli]`` extras are not installed.
+
+Changed
+-------
+
+*   A ``FileNotFoundError`` subclass is now raised when a file isn't found.
+
+    Previously, a ``TypeError`` was implicitly raised due to the structure of the code.
+
+Documentation
+-------------
+
+*   Add a ``CITATION.cff`` file.
+
 .. _changelog-0.10.0:
 
 0.10.0 - 2025-03-25
