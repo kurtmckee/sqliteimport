@@ -10,7 +10,7 @@ sqliteimport
 ############
 
 ..  image:: _static/banner.png
-    :alt: sqlite import: Import Python code in sqlite databases.
+    :alt: sqlite import: Import Python code from sqlite databases.
 
 -------------------------------------------------------------------------------
 

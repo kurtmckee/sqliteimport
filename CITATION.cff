@@ -1,0 +1,16 @@
+cff-version: '1.2.0'
+message: 'If you use this software, please cite it using the metadata from this file.'
+type: 'software'
+title: 'sqliteimport'
+abstract: 'Import Python code from sqlite databases.'
+authors:
+  - given-names: 'Kurt'
+    family-names: 'McKee'
+    email: 'contactme@kurtmckee.org'
+    orcid: 'https://orcid.org/0000-0002-8547-8489'
+license: 'MIT'
+repository-code: 'https://github.com/kurtmckee/sqliteimport'
+url: 'https://sqliteimport.readthedocs.io/'
+keywords:
+  - 'python'
+  - 'sqlite'
