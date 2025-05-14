@@ -1,3 +1,4 @@
+import contextlib
 import pathlib
 import sqlite3
 import sys
@@ -21,3 +22,21 @@ def database():
         sqliteimport.load(connection)
 
         yield connection
+
+
+@pytest.fixture(scope="session")
+def ignore_tempermental_deprecations():
+    # Between 3.11 and 3.12.9, Python would throw DeprecationWarning when calling
+    # `importlib.resources.read_text()` and `importlib.resources.read_bytes()`.
+    # These are caught, confirmed to match expectations, and wholly ignored.
+    ignore_tempermental_warnings = contextlib.nullcontext()
+    if (3, 11) < sys.version_info[:3] <= (3, 12, 9):
+        ignore_tempermental_warnings = pytest.warns(
+            DeprecationWarning,
+            match=(
+                r"(open_text|read_text|read_binary) is deprecated. "
+                r"Use files\(\) instead"
+            ),
+        )
+
+    return ignore_tempermental_warnings

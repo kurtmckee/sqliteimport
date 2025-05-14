@@ -1,4 +1,3 @@
-import contextlib
 import importlib.machinery
 import importlib.metadata
 import importlib.resources
@@ -11,6 +10,7 @@ import pytest
 import sqliteimport
 import sqliteimport.accessor
 import sqliteimport.bundler
+from sqliteimport.errors import FileNotFoundInDatabaseError
 
 
 @pytest.mark.parametrize(
@@ -95,24 +95,11 @@ def test_package(database, import_name):
         "package_sqlite",
     ),
 )
-def test_package_resources(database, import_name):
+def test_package_resources(database, import_name, ignore_tempermental_deprecations):
     module = importlib.import_module(import_name)
 
-    # Between 3.11 and 3.12.9, Python would throw DeprecationWarning when calling
-    # `importlib.resources.read_text()` and `importlib.resources.read_bytes()`.
-    # These are caught, confirmed to match expectations, and wholly ignored.
-    ignore_tempermental_warnings = contextlib.nullcontext()
-    if (3, 11) < sys.version_info[:3] <= (3, 12, 9):
-        ignore_tempermental_warnings = pytest.warns(
-            DeprecationWarning,
-            match=(
-                r"(open_text|read_text|read_binary) is deprecated. "
-                r"Use files\(\) instead"
-            ),
-        )
-
     # Test resource access via `importlib.resources` helper functions.
-    with ignore_tempermental_warnings:
+    with ignore_tempermental_deprecations:
         content_text = importlib.resources.read_text(module, "resource.txt")
         content_bytes = importlib.resources.read_binary(module, "resource.txt")
     assert content_text.strip() == "resource"
@@ -140,6 +127,27 @@ def test_package_resources(database, import_name):
         content_bytes = path.read_bytes()
     assert content_text.strip() == "resource"
     assert content_bytes.strip() == b"resource"
+
+
+@pytest.mark.parametrize(
+    "import_name, exception_class",
+    (
+        ("package_filesystem", FileNotFoundError),
+        ("package_sqlite", FileNotFoundInDatabaseError),
+    ),
+)
+def test_file_not_found(
+    database, import_name, exception_class, ignore_tempermental_deprecations
+):
+    """Verify similarity between filesystem and sqlite FileNotFound exceptions."""
+
+    with ignore_tempermental_deprecations:
+        with pytest.raises(exception_class) as error:
+            importlib.resources.read_text(import_name, "bogus")
+
+    assert error.type is exception_class
+    assert import_name in error.value.filename
+    assert error.value.filename.endswith("bogus")
 
 
 @pytest.mark.parametrize(

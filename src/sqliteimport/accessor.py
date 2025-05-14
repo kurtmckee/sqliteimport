@@ -11,6 +11,7 @@ import types
 import typing
 
 from .compat import marshal
+from .errors import FileNotFoundInDatabaseError
 from .util import get_magic_number, get_python_identifier
 
 
@@ -238,7 +239,7 @@ class Accessor:
     ) -> bytes:
         contents: bytes
         if path:
-            contents = self.connection.execute(
+            cursor = self.connection.execute(
                 """
                 SELECT
                     contents
@@ -246,9 +247,9 @@ class Accessor:
                 WHERE path LIKE ?;
                 """,
                 (path,),
-            ).fetchone()[0]
+            )
         else:  # fullname
-            contents = self.connection.execute(
+            cursor = self.connection.execute(
                 """
                 SELECT
                     contents
@@ -256,7 +257,14 @@ class Accessor:
                 WHERE fullname LIKE ?;
                 """,
                 (fullname,),
-            ).fetchone()[0]
+            )
+
+        try:
+            contents = cursor.fetchone()[0]
+        except TypeError:
+            filename = str(path or fullname)
+            database_path = self.get_database_path(self.connection)
+            raise FileNotFoundInDatabaseError(filename, database_path)
 
         return decompress(contents)
 
