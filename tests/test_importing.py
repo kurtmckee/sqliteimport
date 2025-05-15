@@ -1,6 +1,7 @@
 import importlib.machinery
 import importlib.metadata
 import importlib.resources
+import importlib.util
 import sys
 import types
 import uuid
@@ -220,3 +221,27 @@ def test_distribution_finding(database):
     name = f"p{uuid.uuid4().hex}"
     discovered = list(sqliteimport.importer.SqliteDistribution.discover(name=name))
     assert discovered == []
+
+
+def test_find_distributions_finds_nothing(database):
+    name = f"p{uuid.uuid4().hex}"
+    distributions = list(importlib.metadata.distributions(name=name))
+    assert distributions == []
+
+
+@pytest.mark.parametrize("name", ("package_filesystem", "package_sqlite"))
+def test_find_distributions_one_name(database, name, ignore_tempermental_deprecations):
+    distributions = list(importlib.metadata.distributions(name=name))
+    assert len(distributions) == 1
+    assert distributions[0].metadata["Name"] == name.replace("_", "-")
+
+
+def test_find_distributions_finds_everything(database):
+    distributions = list(importlib.metadata.distributions())
+    distribution_names = {d.metadata["Name"] for d in distributions}
+    expected_names = {
+        "module-sqlite",
+        "namespace-sqlite-plugin",
+        "package-sqlite",
+    }
+    assert distribution_names & expected_names == expected_names
