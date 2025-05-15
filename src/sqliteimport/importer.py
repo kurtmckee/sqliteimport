@@ -24,7 +24,7 @@ from .compat import (
 )
 
 
-class SqliteFinder(importlib.abc.MetaPathFinder):
+class SqliteFinder(importlib.metadata.DistributionFinder):
     def __init__(self, database: pathlib.Path | sqlite3.Connection) -> None:
         if isinstance(database, pathlib.Path):
             self.database = database
@@ -69,17 +69,9 @@ class SqliteFinder(importlib.abc.MetaPathFinder):
     ) -> typing.Generator[SqliteDistribution]:
         if context is None:
             context = importlib.metadata.DistributionFinder.Context()
-        if context.name is None:
-            return
 
-        # Determine if the distribution exists.
-        # This try/except block is an inelegant conditional.
-        try:
-            self.accessor.get_file(path=f"{context.name}-%.dist-info/METADATA")
-        except FileNotFoundError:
-            return
-
-        yield SqliteDistribution(context.name, self.connection)
+        for module in self.accessor.find_distributions(context.name):
+            yield SqliteDistribution(module, self.connection)
 
 
 @accommodate_python_39_from_package_behavior
@@ -113,6 +105,12 @@ class SqliteDistribution(importlib.metadata.Distribution):
         self.__name = name
         self.__connection = connection
         self.__accessor = Accessor(connection)
+
+    if sys.version_info < (3, 10):
+        # The `.name` property doesn't exist in Python 3.9.
+        @property
+        def name(self) -> str:
+            return self.metadata["Name"]
 
     def locate_file(self, path: typing.Any) -> pathlib.Path:
         raise NotImplementedError()
