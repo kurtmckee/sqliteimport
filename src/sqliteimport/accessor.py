@@ -268,6 +268,35 @@ class Accessor:
 
         return decompress(contents)
 
+    def find_distributions(self, name: str | None) -> typing.Generator[str]:
+        if name is not None:
+            path_pattern = f"{name}-%.dist-info/METADATA"
+        else:
+            path_pattern = "%.dist-info/METADATA"
+
+        sql = """
+            SELECT
+                path
+            FROM code
+            WHERE
+                path LIKE $path_pattern
+            ;
+        """
+
+        cursor = self.connection.execute(
+            sql,
+            {"path_pattern": path_pattern},
+        )
+        rows = cursor.fetchall()
+        if rows is None:
+            return
+
+        path: str
+        for (path,) in rows:
+            module, _, _ = path.partition("-")
+            if module.isidentifier():
+                yield module
+
     def list_directory(self, path_like: str) -> list[str]:
         """List the contents of a directory."""
 
