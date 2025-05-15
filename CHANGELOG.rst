@@ -25,6 +25,18 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.12.0:
+
+0.12.0 - 2025-05-15
+===================
+
+Fixed
+-----
+
+*   Find all available distributions when no name is given.
+
+    This allows tools like flake8 to auto-detect installed plugins.
+
 .. _changelog-0.11.0:
 
 0.11.0 - 2025-05-14
