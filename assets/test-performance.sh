@@ -9,6 +9,11 @@ rm -rf "build/perftest" || true
 rm perf.* || true
 python assets/generate-perftest-directory.py
 
+# Note the size of the source code tree.
+echo "Source tree" > perf.files.log
+du --max-depth=0 --bytes build/perftest >> perf.files.log
+
+
 export PYTHONPROFILEIMPORTTIME=1
 export PYTHONDONTWRITEBYTECODE=1
 
@@ -53,7 +58,15 @@ command time --portability --output "${FILE_PREFIX}.time.log" \
 # Compile the source to bytecode
 # ------------------------------
 
+# Compile into `__pycache__/` subdirectories for the filesystem.
 PYTHONPROFILEIMPORTTIME="" python -m compileall -q "build/perftest"
+
+# Note the size of the tree, including bytecode.
+echo "Source tree with bytecode" >> perf.files.log
+du --max-depth=0 --bytes build/perftest >> perf.files.log
+
+# Compile in-place for zipimport.
+PYTHONPROFILEIMPORTTIME="" python -m compileall -b -q "build/perftest"
 
 
 # Filesystem -- bytecode
@@ -75,7 +88,7 @@ export FILE_PREFIX="perf.zip.bytecode"
 echo "${FILE_PREFIX}"
 export PYTHONPATH="${FILE_PREFIX}.zip"
 cd "build/perftest"
-zip -qr9 "../../${PYTHONPATH}" .
+zip -qr9 "../../${PYTHONPATH}" . --exclude '*/__pycache__/*'
 cd "../.."
 command time --portability --output "${FILE_PREFIX}.time.log" \
     python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
@@ -97,4 +110,4 @@ command time --portability --output "${FILE_PREFIX}.time.log" \
 # Capture the file sizes
 # ----------------------
 
-ls -l perf.* > perf.files.log
+ls -l perf.*.zip perf.*.sqlite3 >> perf.files.log
