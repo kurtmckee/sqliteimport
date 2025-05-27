@@ -5,11 +5,17 @@
 $env:PYTHONPROFILEIMPORTTIME=$null
 $env:PYTHONDONTWRITEBYTECODE=1
 
-Remove-Item -Recurse "build\perftest"
-Remove-Item perf.*
+Remove-Item -Recurse "build\perftest" | Out-Null
+Remove-Item perf.* | Out-Null
 python assets/generate-perftest-directory.py
 
+# Note the size of the source code tree.
+Write-Output "Source tree" > perf.files.log
+Get-ChildItem -Recurse "build\perftest" | Measure-Object -Sum Length >> perf.files.log
+
+
 $env:PYTHONPROFILEIMPORTTIME=1
+$env:PYTHONDONTWRITEBYTECODE=1
 
 
 # Filesystem -- source only
@@ -57,7 +63,17 @@ Measure-Command {
 # ------------------------------
 
 $env:PYTHONPROFILEIMPORTTIME=$null
+
+# Compile into `__pycache__/` subdirectories for the filesystem.
 python -m compileall -q "build\perftest"
+
+# Note the size of the tree, including bytecode.
+Write-Output "Source tree with bytecode" >> perf.files.log
+Get-ChildItem -Recurse "build\perftest" | Measure-Object -Sum Length >> perf.files.log
+
+# Compile in-place for zipimport.
+python -m compileall -b -q "build\perftest"
+
 $env:PYTHONPROFILEIMPORTTIME=1
 
 
@@ -75,6 +91,10 @@ Measure-Command {
 
 # Zip -- bytecode
 # ---------------
+
+# Delete the `__pycache__\` directories.
+$cache_paths = Get-ChildItem -Recurse "build\perftest" | Where-Object { $_.Name -eq "__pycache__" }
+Remove-Item -Recurse $cache_paths | Out-Null
 
 Write-Host
 $env:FILE_PREFIX="perf.zip.bytecode"
@@ -105,4 +125,4 @@ Measure-Command {
 # Capture the file sizes
 # ----------------------
 
-Get-ChildItem perf.* > perf.files.log
+Get-ChildItem perf.*.zip,perf.*.sqlite3 >> perf.files.log
