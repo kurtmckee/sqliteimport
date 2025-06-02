@@ -5,109 +5,86 @@
 
 set -eu
 
-rm -rf "build/perftest" || true
-rm perf.* || true
-python assets/generate-perftest-directory.py
-
-# Note the size of the source code tree.
-echo "Source tree" > perf.files.log
-du --max-depth=0 --bytes build/perftest >> perf.files.log
-
-
-export PYTHONPROFILEIMPORTTIME=1
-export PYTHONDONTWRITEBYTECODE=1
+python assets/performance clean
+mkdir -p build/perfstats
+python assets/performance generate -r flows-requirements.txt
 
 
 # Filesystem -- source only
 # -------------------------
 
 echo
-export FILE_PREFIX="perf.filesystem.source"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="build/perftest"
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+echo filesystem / source
+python assets/performance run --importer filesystem --code-type source importsy.py
 
 
 # Zip -- source only
 # ------------------
 
 echo
-export FILE_PREFIX="perf.zip.source"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
+export FILE_PREFIX="build/perfstats"
+echo "zipimport / source"
+export PYTHONPATH="${FILE_PREFIX}/source.zip"
 cd "build/perftest"
 zip -qr9 "../../${PYTHONPATH}" .
 cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+python assets/performance run --importer zipimport --code-type source importsy.py
 
 
 # Sqlite -- source only
 # ---------------------
 
 echo
-export FILE_PREFIX="perf.sqlite.source"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.sqlite3"
-PYTHONPROFILEIMPORTTIME="" sqliteimport bundle "build/perftest" "${PYTHONPATH}" 1>/dev/null
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import sqliteimport; import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+export FILE_PREFIX="build/perfstats"
+echo "sqliteimport / source"
+export PYTHONPATH="${FILE_PREFIX}/source.sqlite3"
+sqliteimport bundle "build/perftest" "${PYTHONPATH}" 1>/dev/null
+python assets/performance run --importer sqliteimport --code-type source importsy.py
 
 
 # Compile the source to bytecode
 # ------------------------------
 
-# Compile into `__pycache__/` subdirectories for the filesystem.
-PYTHONPROFILEIMPORTTIME="" python -m compileall -q "build/perftest"
-
-# Note the size of the tree, including bytecode.
-echo "Source tree with bytecode" >> perf.files.log
-du --max-depth=0 --bytes build/perftest >> perf.files.log
-
-# Compile in-place for zipimport.
-PYTHONPROFILEIMPORTTIME="" python -m compileall -b -q "build/perftest"
+# Compile the source code to bytecode for each importer type.
+python assets/performance compile --importer filesystem 1>/dev/null
+python assets/performance compile --importer zipimport 1>/dev/null
+python assets/performance compile --importer sqliteimport 1>/dev/null
 
 
 # Filesystem -- bytecode
 # ----------------------
 
 echo
-export FILE_PREFIX="perf.filesystem.bytecode"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="build/perftest"
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+echo "filesystem / bytecode"
+python assets/performance run --importer filesystem --code-type bytecode importsy.py
 
 
 # Zip -- bytecode
 # ---------------
 
 echo
-export FILE_PREFIX="perf.zip.bytecode"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.zip"
+export FILE_PREFIX="build/perfstats"
+echo "zipimport / bytecode"
+export PYTHONPATH="${FILE_PREFIX}/bytecode.zip"
 cd "build/perftest"
 zip -qr9 "../../${PYTHONPATH}" . --exclude '*/__pycache__/*'
 cd "../.."
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+python assets/performance run --importer zipimport --code-type bytecode importsy.py
 
 
 # Sqlite -- bytecode
 # ------------------
 
 echo
-export FILE_PREFIX="perf.sqlite.bytecode"
-echo "${FILE_PREFIX}"
-export PYTHONPATH="${FILE_PREFIX}.sqlite3"
-PYTHONPROFILEIMPORTTIME="" sqliteimport bundle "build/perftest" "${PYTHONPATH}" 1>/dev/null
-PYTHONPROFILEIMPORTTIME="" sqliteimport compile "${PYTHONPATH}"
-command time --portability --output "${FILE_PREFIX}.time.log" \
-    python -c 'import sqliteimport; import a; print(a)' 2> "${FILE_PREFIX}.import.log"
+echo "sqliteimport / bytecode"
+python assets/performance run --importer sqliteimport --code-type bytecode importsy.py
 
 
-# Capture the file sizes
-# ----------------------
+# Collect stats
+# -------------
 
-ls -l perf.*.zip perf.*.sqlite3 >> perf.files.log
+python assets/performance collect
+python assets/performance plot --code-type source   --measurement time --output build/perfstats/linux-source-time.png
+python assets/performance plot --code-type bytecode --measurement time --output build/perfstats/linux-bytecode-time.png
+python assets/performance plot --code-type source   --measurement size --output build/perfstats/linux-source-size.png
+python assets/performance plot --code-type bytecode --measurement size --output build/perfstats/linux-bytecode-size.png
