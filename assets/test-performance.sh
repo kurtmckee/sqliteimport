@@ -7,7 +7,7 @@ set -eu
 
 python assets/performance clean
 mkdir -p build/perfstats
-python assets/performance generate -r flows-requirements.txt
+python assets/performance generate -r custom-requirements.txt
 
 
 # Filesystem -- source only
