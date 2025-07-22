@@ -12,7 +12,8 @@ import typing
 
 from .compat import marshal
 from .errors import FileNotFoundInDatabaseError
-from .util import get_magic_number, get_python_identifier
+from .util import get_magic_number
+from .util import get_python_identifier
 
 
 class Accessor:

@@ -9,7 +9,12 @@ import typing
 
 import click
 
-from . import LOG_PATHS, PACKAGE_PATHS, STATS, CodeType, Importer, Measurement
+from . import LOG_PATHS
+from . import PACKAGE_PATHS
+from . import STATS
+from . import CodeType
+from . import Importer
+from . import Measurement
 
 
 @click.command()
