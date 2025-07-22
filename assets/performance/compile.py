@@ -7,7 +7,10 @@ import typing
 
 import click
 
-from . import PACKAGE_DIRECTORY, PACKAGE_PATHS, CodeType, Importer
+from . import PACKAGE_DIRECTORY
+from . import PACKAGE_PATHS
+from . import CodeType
+from . import Importer
 
 
 @click.command("compile", no_args_is_help=True)

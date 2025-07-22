@@ -17,11 +17,9 @@ import types
 import typing
 
 from .accessor import Accessor
-from .compat import (
-    Traversable,
-    TraversableResources,
-    accommodate_python_39_from_package_behavior,
-)
+from .compat import Traversable
+from .compat import TraversableResources
+from .compat import accommodate_python_39_from_package_behavior
 
 
 class SqliteFinder(importlib.metadata.DistributionFinder):

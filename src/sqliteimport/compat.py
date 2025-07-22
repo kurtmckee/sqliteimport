@@ -37,9 +37,11 @@ else:
 
 if sys.version_info >= (3, 11):
     # Python 3.11 moved some abstract base classes.
-    from importlib.resources.abc import Traversable, TraversableResources
+    from importlib.resources.abc import Traversable
+    from importlib.resources.abc import TraversableResources
 else:
-    from importlib.abc import Traversable, TraversableResources
+    from importlib.abc import Traversable
+    from importlib.abc import TraversableResources
 
 T = typing.TypeVar("T")
 if sys.version_info < (3, 10):

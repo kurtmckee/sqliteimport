@@ -8,7 +8,8 @@ import sqlite3
 import sys
 import textwrap
 
-from . import bundler, compiler
+from . import bundler
+from . import compiler
 from .accessor import Accessor
 from .util import get_magic_number
 

@@ -69,6 +69,7 @@ fail_under = 60
 
 [tool.isort]
 profile = "black"
+force_single_line = true
 extend_skip_glob = [
     "demo.py",
     "docs/flake8/*",

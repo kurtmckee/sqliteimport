@@ -6,7 +6,8 @@ import shutil
 
 import click
 
-from . import PACKAGE_DIRECTORY, STATS
+from . import PACKAGE_DIRECTORY
+from . import STATS
 
 
 @click.command()

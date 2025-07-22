@@ -7,7 +7,10 @@ import typing
 import click
 import matplotlib.pyplot as plt
 
-from . import STATS, CodeType, Importer, Measurement
+from . import STATS
+from . import CodeType
+from . import Importer
+from . import Measurement
 
 
 @click.command()

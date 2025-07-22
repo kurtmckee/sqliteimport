@@ -8,7 +8,11 @@ import subprocess
 
 import click
 
-from . import LOG_PATHS, PACKAGE_PATHS, REPO_ROOT, CodeType, Importer
+from . import LOG_PATHS
+from . import PACKAGE_PATHS
+from . import REPO_ROOT
+from . import CodeType
+from . import Importer
 
 
 @click.command("run", no_args_is_help=True)
