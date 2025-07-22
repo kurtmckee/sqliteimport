@@ -1,3 +1,8 @@
+..
+    This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+    Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+    SPDX-License-Identifier: MIT
+
 The performance testing script relies on this directory
 to ensure that sqliteimport can auto-load databases.
 

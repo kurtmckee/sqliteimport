@@ -41,6 +41,25 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 
+# chipshot
+# --------
+
+[tool.chipshot]
+template = """
+This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+Copyright 2024-{{ year }} Kurt McKee <contactme@kurtmckee.org>
+SPDX-License-Identifier: MIT
+"""
+exclusions = [
+    "docs/conf.py",
+    "docs/_static/custom.css",
+    "docs/flake8/assets/",
+    "docs/isort/assets/",
+    "tests/installed-projects/",
+    "tests/source-projects/",
+]
+
+
 # coverage
 # --------
 
