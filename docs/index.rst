@@ -59,6 +59,7 @@ Table of contents
     bytecode
     flake8/index
     isort/index
+    ruff/index
 
 
 Project info
