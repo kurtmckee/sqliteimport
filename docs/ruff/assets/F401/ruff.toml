@@ -1,0 +1,12 @@
+[lint.isort.sections]
+sqliteimport = ["sqliteimport"]
+
+[lint.isort]
+section-order = [
+    "future",
+    "standard-library",
+    "sqliteimport",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
