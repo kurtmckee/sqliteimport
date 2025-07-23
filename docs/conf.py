@@ -31,8 +31,9 @@ html_static_path = [
     "_static",
 ]
 html_theme_options = {
-    # "logo": "logo.png",
-    # "logo_name": "sqliteimport",
+    "logo": "logo.png",
+    "logo_name": True,
+    "description": "Import Python code from sqlite databases.",
     # Link to GitHub
     "github_user": "kurtmckee",
     "github_repo": "sqliteimport",
@@ -41,6 +42,16 @@ html_theme_options = {
     "github_count": False,
     # Don't show "Powered by" text.
     "show_powered_by": False,
+}
+templates_path = ["_templates"]
+html_sidebars = {
+    "index": [
+        "about-no-logo.html.jinja",  # Don't show a logo on the front page.
+        "searchfield.html",
+        "navigation.html",
+        "relations.html",
+        "donate.html",
+    ]
 }
 
 # Don't copy source .rst files into the built documentation.
