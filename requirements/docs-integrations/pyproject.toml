@@ -5,3 +5,4 @@ package-mode = false
 python = ">=3.9"
 flake8 = "*"
 isort = "*"
+ruff = "*"

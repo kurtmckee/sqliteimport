@@ -1,6 +1,6 @@
 [project]
 name = "sqliteimport"
-version = "0.12.0"
+version = "0.13.0"
 description = "Import Python code from sqlite databases"
 authors = [
     { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
@@ -41,6 +41,26 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 
+# chipshot
+# --------
+
+[tool.chipshot]
+template = """
+This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+Copyright 2024-{{ year }} Kurt McKee <contactme@kurtmckee.org>
+SPDX-License-Identifier: MIT
+"""
+exclusions = [
+    "docs/conf.py",
+    "docs/_static/custom.css",
+    "docs/flake8/assets/",
+    "docs/isort/assets/",
+    "docs/ruff/assets/",
+    "tests/installed-projects/",
+    "tests/source-projects/",
+]
+
+
 # coverage
 # --------
 
@@ -69,10 +89,12 @@ fail_under = 60
 
 [tool.isort]
 profile = "black"
+force_single_line = true
 extend_skip_glob = [
     "demo.py",
     "docs/flake8/*",
     "docs/isort/*",
+    "docs/ruff/*",
 ]
 
 

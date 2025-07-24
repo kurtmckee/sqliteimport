@@ -2,39 +2,28 @@
 # Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
 # SPDX-License-Identifier: MIT
 
-$env:PYTHONPROFILEIMPORTTIME=$null
-$env:PYTHONDONTWRITEBYTECODE=1
-
-Remove-Item -Recurse "build\perftest"
-Remove-Item perf.*
-python assets/generate-perftest-directory.py
-
-$env:PYTHONPROFILEIMPORTTIME=1
+python assets/performance clean
+mkdir -p build/perfstats
+python assets/performance generate -r custom-requirements.txt
 
 
 # Filesystem -- source only
 # -------------------------
 
 Write-Host
-$env:FILE_PREFIX="perf.filesystem.source"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="build\perftest"
-Measure-Command {
-    python -c 'import a; print(a)' 2>"${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "filesystem / source"
+python assets/performance run --importer filesystem --code-type source importsy.py
 
 
 # Zip -- source only
 # ------------------
 
 Write-Host
-$env:FILE_PREFIX="perf.zip.source"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="${env:FILE_PREFIX}.zip"
-Compress-Archive -CompressionLevel Optimal -Path "build\perftest\*" -DestinationPath "${env:PYTHONPATH}"
-Measure-Command {
-    python -c 'import a; print(a)' 2>"${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "zipimport / source"
+$env:FILE_PREFIX="build\perfstats"
+$env:OUTPUT_PATH="${env:FILE_PREFIX}\source.zip"
+Compress-Archive -CompressionLevel Optimal -Path "build\perftest\*" -DestinationPath "${env:OUTPUT_PATH}"
+python assets/performance run --importer zipimport --code-type source importsy.py
 
 
 
@@ -42,67 +31,61 @@ Measure-Command {
 # ---------------------
 
 Write-Host
-$env:FILE_PREFIX="perf.sqlite.source"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="${env:FILE_PREFIX}.sqlite3"
-$env:PYTHONPROFILEIMPORTTIME=$null
-sqliteimport bundle "build\perftest" "${env:PYTHONPATH}" | Out-Null
-$env:PYTHONPROFILEIMPORTTIME=1
-Measure-Command {
-    python -c 'import sqliteimport; import a; print(a)' 2> "${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "sqliteimport / source"
+$env:FILE_PREFIX="build\perfstats"
+$env:OUTPUT_PATH="${env:FILE_PREFIX}\source.sqlite3"
+sqliteimport bundle "build\perftest" "${env:OUTPUT_PATH}" | Out-Null
+python assets/performance run --importer sqliteimport --code-type source importsy.py
 
 
 # Compile the source to bytecode
 # ------------------------------
 
-$env:PYTHONPROFILEIMPORTTIME=$null
-python -m compileall -q "build\perftest"
-$env:PYTHONPROFILEIMPORTTIME=1
+# Compile the source code to bytecode for each importer type.
+python assets/performance compile --importer filesystem | Out-Null
+python assets/performance compile --importer zipimport | Out-Null
+python assets/performance compile --importer sqliteimport | Out-Null
 
 
 # Filesystem -- bytecode
 # ----------------------
 
 Write-Host
-$env:FILE_PREFIX="perf.filesystem.bytecode"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="build\perftest"
-Measure-Command {
-    python -c 'import a; print(a)' 2>"${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "filesystem / bytecode"
+python assets/performance run --importer filesystem --code-type bytecode importsy.py
 
 
 # Zip -- bytecode
 # ---------------
 
+# Delete the `__pycache__\` directories.
+$cache_paths = Get-ChildItem -Recurse "build\perftest" | Where-Object { $_.Name -eq "__pycache__" }
+Remove-Item -Recurse $cache_paths | Out-Null
+
 Write-Host
-$env:FILE_PREFIX="perf.zip.bytecode"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="${env:FILE_PREFIX}.zip"
-Compress-Archive -CompressionLevel Optimal -Path "build\perftest\*" -DestinationPath "${env:PYTHONPATH}"
-Measure-Command {
-    python -c 'import a; print(a)' 2>"${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "zipimport / bytecode"
+$env:FILE_PREFIX="build\perfstats"
+$env:OUTPUT_PATH="${env:FILE_PREFIX}\bytecode.zip"
+Compress-Archive -CompressionLevel Optimal -Path "build\perftest\*" -DestinationPath "${env:OUTPUT_PATH}"
+python assets/performance run --importer zipimport --code-type bytecode importsy.py
 
 
 # Sqlite -- bytecode
 # ------------------
 
 Write-Host
-$env:FILE_PREFIX="perf.sqlite.bytecode"
-Write-Host "${env:FILE_PREFIX}"
-$env:PYTHONPATH="${env:FILE_PREFIX}.sqlite3"
-$env:PYTHONPROFILEIMPORTTIME=$null
-sqliteimport bundle "build\perftest" "${env:PYTHONPATH}" | Out-Null
-sqliteimport compile "${env:PYTHONPATH}"
-$env:PYTHONPROFILEIMPORTTIME=1
-Measure-Command {
-    python -c 'import sqliteimport; import a; print(a)' 2> "${env:FILE_PREFIX}.import.log" | Write-Host
-} > "${env:FILE_PREFIX}.time.log"
+Write-Host "sqliteimport / bytecode"
+python assets/performance run --importer sqliteimport --code-type bytecode importsy.py
 
 
 # Capture the file sizes
 # ----------------------
 
-Get-ChildItem perf.* > perf.files.log
+# Collect stats
+# -------------
+
+python assets/performance collect
+python assets/performance plot --code-type source   --measurement time --output build/perfstats/windows-source-time.png
+python assets/performance plot --code-type bytecode --measurement time --output build/perfstats/windows-bytecode-time.png
+python assets/performance plot --code-type source   --measurement size --output build/perfstats/windows-source-size.png
+python assets/performance plot --code-type bytecode --measurement size --output build/perfstats/windows-bytecode-size.png

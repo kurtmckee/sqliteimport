@@ -1,0 +1,5 @@
+[lint.isort]
+force-to-top = ["sqliteimport"]
+
+# Hidden from rendering in the docs.
+known-third-party = ["sqliteimport"]

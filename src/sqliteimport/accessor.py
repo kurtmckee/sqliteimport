@@ -4,15 +4,16 @@
 
 from __future__ import annotations
 
-import lzma
 import pathlib
 import sqlite3
 import types
 import typing
 
+from .compat import compression
 from .compat import marshal
 from .errors import FileNotFoundInDatabaseError
-from .util import get_magic_number, get_python_identifier
+from .util import get_magic_number
+from .util import get_python_identifier
 
 
 class Accessor:
@@ -204,25 +205,44 @@ class Accessor:
     def find_spec(
         self, fullname: str
     ) -> tuple[str, bytes | types.CodeType, bool] | None:
+        find_spec_table = self.find_spec_table
         result: tuple[str, bytes, bool] | None = self.connection.execute(
             f"""
             SELECT
                 path,
                 contents,
                 is_package
-            FROM {self.find_spec_table}
+            FROM {find_spec_table}
             WHERE fullname = ?
             ;
             """,
             (fullname,),
         ).fetchone()
+
+        if result is None and self.find_spec_table != "code":
+            # Nothing was found in the bytecode table.
+            # Try searching the source-only table.
+            find_spec_table = "code"
+            result = self.connection.execute(
+                """
+                SELECT
+                    path,
+                    contents,
+                    is_package
+                FROM code
+                WHERE fullname = ?
+                ;
+                """,
+                (fullname,),
+            ).fetchone()
+
         if result is None:
             return None
         path, code, is_package = result
         code = decompress(code)
 
         # Source code
-        if self.find_spec_table == "code":
+        if find_spec_table == "code":
             return path, code, is_package
 
         # Byte code
@@ -390,16 +410,18 @@ class Accessor:
 
 
 def compress(data: bytes) -> bytes:
-    return lzma.compress(
+    compressed: bytes = compression.lzma.compress(
         data,
-        format=lzma.FORMAT_RAW,
-        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+        format=compression.lzma.FORMAT_RAW,
+        filters=[{"id": compression.lzma.FILTER_LZMA2, "preset": 0}],
     )
+    return compressed
 
 
 def decompress(data: bytes) -> bytes:
-    return lzma.decompress(
+    decompressed: bytes = compression.lzma.decompress(
         data,
-        format=lzma.FORMAT_RAW,
-        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+        format=compression.lzma.FORMAT_RAW,
+        filters=[{"id": compression.lzma.FILTER_LZMA2, "preset": 0}],
     )
+    return decompressed

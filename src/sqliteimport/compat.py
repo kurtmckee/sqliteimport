@@ -10,6 +10,7 @@ import typing
 
 __all__ = [
     "accommodate_python_39_from_package_behavior",
+    "compression",
     "marshal",
     "Traversable",
     "TraversableResources",
@@ -37,9 +38,11 @@ else:
 
 if sys.version_info >= (3, 11):
     # Python 3.11 moved some abstract base classes.
-    from importlib.resources.abc import Traversable, TraversableResources
+    from importlib.resources.abc import Traversable
+    from importlib.resources.abc import TraversableResources
 else:
-    from importlib.abc import Traversable, TraversableResources
+    from importlib.abc import Traversable
+    from importlib.abc import TraversableResources
 
 T = typing.TypeVar("T")
 if sys.version_info < (3, 10):
@@ -76,3 +79,16 @@ else:
     # Python 3.10 and higher have correct behavior so no patching is required.
     def accommodate_python_39_from_package_behavior(cls: type[T]) -> type[T]:
         return cls
+
+
+if sys.version_info < (3, 14):
+    # Python 3.14 introduced the top-level `compression` module,
+    # which contains compression libraries like `lzma`.
+    # Mimic the Python 3.14 compression module namespace.
+    import lzma
+
+    compression = types.SimpleNamespace()
+    compression.lzma = lzma
+else:
+    # No-op for Python 3.14 and higher.
+    import compression.lzma
