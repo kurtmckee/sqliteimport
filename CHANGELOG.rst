@@ -25,6 +25,56 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.13.0:
+
+0.13.0 - 2025-07-24
+===================
+
+Python support
+--------------
+
+*   Drop support for PyPy 3.10.
+
+Fixed
+-----
+
+*   Fall back to importing from source code if importing from byte code fails.
+
+    This resolves a problem importing Flask when byte-compiled,
+    due to its ``sansio`` subdirectory, which has no ``__init__.py`` file
+    and whose submodules currently fail to import from the byte code table.
+
+Documentation
+-------------
+
+*   Document compatible ruff configurations.
+
+*   Add a logo and description to the sidebar on subpages.
+
+*   Update the homepage sidebar layout and design.
+
+Development
+-----------
+
+*   Fix performance testing issues.
+
+    Zip-based bytecode import times were skewed during testing
+    because ``zipimport`` doesn't use PEP 3147 ``__pycache__/`` subdirectories.
+    This is now accounted for by the performance testing script's setup steps,
+    and zip-based import times are now accurate for comparison.
+
+    Also, the total size of the source code and byte code trees is captured.
+
+*   Begin to expand and better automate performance testing.
+
+    This includes the ability to install from a ``requirements.txt`` file,
+    to execute an arbitrary Python file, and to plot comparison bar charts
+    of import times and package content sizes.
+
+*   Use chipshot to standardize headers.
+
+*   Prefer the new Python 3.14 ``compression.lzma`` namespace.
+
 .. _changelog-0.12.0:
 
 0.12.0 - 2025-05-15
