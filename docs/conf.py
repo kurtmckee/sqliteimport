@@ -43,15 +43,17 @@ html_theme_options = {
     "github_button": True,
     "github_type": "star",
     "github_count": False,
+    # Donation button
+    "donate_url": "https://ko-fi.com/kurtmckee",
 }
 templates_path = ["_templates"]
 html_sidebars = {
     "index": [
         "about-no-logo.html.jinja",  # Don't show a logo on the front page.
+        "donate.html",
         "navigation.html",
         "relations.html",
         "searchbox.html",
-        "donate.html",
     ]
 }
 
