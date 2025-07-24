@@ -31,6 +31,8 @@ cli = [
 Source = "https://github.com/kurtmckee/sqliteimport"
 Documentation = "https://sqliteimport.readthedocs.io/en/latest/"
 Changelog = "https://sqliteimport.readthedocs.io/en/latest/changelog/"
+"Donate via GitHub" = "https://github.com/sponsors/kurtmckee"
+"Donate via Ko-Fi" = "https://ko-fi.com/kurtmckee"
 
 [project.scripts]
 sqliteimport = "sqliteimport.cli:group"
