@@ -4,12 +4,12 @@
 
 from __future__ import annotations
 
-import lzma
 import pathlib
 import sqlite3
 import types
 import typing
 
+from .compat import compression
 from .compat import marshal
 from .errors import FileNotFoundInDatabaseError
 from .util import get_magic_number
@@ -391,16 +391,18 @@ class Accessor:
 
 
 def compress(data: bytes) -> bytes:
-    return lzma.compress(
+    compressed: bytes = compression.lzma.compress(
         data,
-        format=lzma.FORMAT_RAW,
-        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+        format=compression.lzma.FORMAT_RAW,
+        filters=[{"id": compression.lzma.FILTER_LZMA2, "preset": 0}],
     )
+    return compressed
 
 
 def decompress(data: bytes) -> bytes:
-    return lzma.decompress(
+    decompressed: bytes = compression.lzma.decompress(
         data,
-        format=lzma.FORMAT_RAW,
-        filters=[{"id": lzma.FILTER_LZMA2, "preset": 0}],
+        format=compression.lzma.FORMAT_RAW,
+        filters=[{"id": compression.lzma.FILTER_LZMA2, "preset": 0}],
     )
+    return decompressed
