@@ -22,6 +22,9 @@ version = release = info_["project"]["version"]
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
+# Don't show "Powered by" text.
+html_show_sphinx = False
+
 
 # HTML theme configuration
 # ------------------------
@@ -40,8 +43,6 @@ html_theme_options = {
     "github_button": True,
     "github_type": "star",
     "github_count": False,
-    # Don't show "Powered by" text.
-    "show_powered_by": False,
 }
 templates_path = ["_templates"]
 html_sidebars = {
