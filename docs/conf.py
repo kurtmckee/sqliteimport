@@ -22,6 +22,9 @@ version = release = info_["project"]["version"]
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
+# Don't show "Powered by" text.
+html_show_sphinx = False
+
 
 # HTML theme configuration
 # ------------------------
@@ -40,17 +43,17 @@ html_theme_options = {
     "github_button": True,
     "github_type": "star",
     "github_count": False,
-    # Don't show "Powered by" text.
-    "show_powered_by": False,
+    # Donation button
+    "donate_url": "https://ko-fi.com/kurtmckee",
 }
 templates_path = ["_templates"]
 html_sidebars = {
     "index": [
         "about-no-logo.html.jinja",  # Don't show a logo on the front page.
-        "searchfield.html",
+        "donate.html",
         "navigation.html",
         "relations.html",
-        "donate.html",
+        "searchbox.html",
     ]
 }
 
