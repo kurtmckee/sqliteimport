@@ -6,7 +6,6 @@ import importlib.machinery
 import importlib.metadata
 import importlib.resources
 import importlib.util
-import sys
 import types
 import uuid
 
@@ -33,11 +32,7 @@ def test_module(database, import_name, version):
 
     assert module.__name__ == import_name
     assert module.__doc__ is None
-    if sys.version_info >= (3, 10):
-        assert module.__annotations__ == {}
-    else:
-        # Python 3.9 doesn't have an `__annotations__` object at the module level.
-        assert not hasattr(module, "__annotations__")
+    assert module.__annotations__ == {}
 
     if hasattr(module, "__cached__"):
         assert isinstance(module.__cached__, str)
@@ -69,11 +64,7 @@ def test_package(database, import_name):
 
     assert module.__name__ == import_name
     assert module.__doc__ is None
-    if sys.version_info >= (3, 10):
-        assert module.__annotations__ == {}
-    else:
-        # Python 3.9 doesn't have an `__annotations__` object at the module level.
-        assert not hasattr(module, "__annotations__")
+    assert module.__annotations__ == {}
 
     if hasattr(module, "__cached__"):
         assert isinstance(module.__cached__, str)
@@ -195,11 +186,7 @@ def test_namespace_package(database, namespace, package, version):
 
     assert module.__name__ == f"{namespace}.{package}"
     assert module.__doc__ is None
-    if sys.version_info >= (3, 10):
-        assert module.__annotations__ == {}
-    else:
-        # Python 3.9 doesn't have an `__annotations__` object at the module level.
-        assert not hasattr(module, "__annotations__")
+    assert module.__annotations__ == {}
 
     if hasattr(module, "__cached__"):
         assert isinstance(module.__cached__, str)

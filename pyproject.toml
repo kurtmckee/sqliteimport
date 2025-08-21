@@ -7,7 +7,7 @@ authors = [
 ]
 license = "MIT"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = [
     "sqlite",
     "import",
