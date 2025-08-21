@@ -33,7 +33,6 @@ jobs:
         # These values will be applied to all runners listed above.
         include:
           - cpythons:
-              - "3.9"
               - "3.10"
               - "3.11"
               - "3.12"

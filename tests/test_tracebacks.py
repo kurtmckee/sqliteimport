@@ -4,7 +4,6 @@
 
 import importlib
 import os.path
-import sys
 import traceback
 
 import pytest
@@ -24,12 +23,7 @@ def test_traceback(database, package, separator):
 
     with pytest.raises(ZeroDivisionError) as error:
         module.trigger_zero_division_error()
-    if sys.version_info >= (3, 10):
-        formatted_exception = "".join(traceback.format_exception(error.value))
-    else:
-        # Python 3.9
-        args = (type(error.value), error.value, error.value.__traceback__)
-        formatted_exception = "".join(traceback.format_exception(*args))
+    formatted_exception = "".join(traceback.format_exception(error.value))
 
     assert "<string>" not in formatted_exception
     assert f"{package}{separator}zero_division.py" in formatted_exception
