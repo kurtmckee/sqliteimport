@@ -26,7 +26,7 @@ if sys.version_info < (3, 13):
 
     @functools.wraps(marshal_.loads)
     def marshal_loads(value: bytes, **_: typing.Any) -> types.CodeType:
-        return marshal_.loads(value)
+        return typing.cast(types.CodeType, marshal_.loads(value))
 
     marshal = types.SimpleNamespace()
     marshal.dumps = marshal_dumps
