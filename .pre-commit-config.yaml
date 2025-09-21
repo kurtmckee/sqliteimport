@@ -74,3 +74,11 @@ repos:
     rev: "v1.0.0"
     hooks:
       - id: "verify-consistent-pyproject-toml-python-requirements"
+
+  - repo: "https://github.com/shellcheck-py/shellcheck-py"
+    rev: "v0.11.0.1"
+    hooks:
+    -   id: "shellcheck"
+        args: [
+          "-e", "SC1091",  # Ignore non-existent 'source ...' targets.
+        ]

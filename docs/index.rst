@@ -55,7 +55,7 @@ Table of contents
 ..  toctree::
     :maxdepth: 1
 
-    load
+    load/index
     bytecode
     flake8/index
     isort/index
