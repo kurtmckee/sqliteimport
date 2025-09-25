@@ -43,15 +43,14 @@ Added
     This allows a database of dependencies to be injected into a target file.
     This can be used to make a Python file a standalone executable.
 
-    This feature requires Python 3.11+ due to Python 3.11+ sqlite3 API usage.
+    This feature requires Python 3.11 and higher at execution time
+    due to sqlite3 API usage.
 
 Documentation
 -------------
 
 *   Use ``pngcrush`` to make image file sizes smaller.
-
 *   Link to the source code repository without using an ``iframe``.
-
 *   Document how to import sqliteimport and load a database of packages.
 
     This now includes runnable scripts showing fully-automated loading
@@ -64,11 +63,8 @@ Development
 
 *   Migrate the flake8 configuration to ``pyproject.toml`` using
     the `flake8-toml-config <https://github.com/kurtmckee/flake8-toml-config>`_ plugin.
-
 *   Test type annotations against all supported Python versions.
-
 *   Lock the GitHub CI runners to known, predictable versions.
-
 *   Lock the coverage dependencies used for generating HTML reports
     to match the same version used to gather coverage statistics.
 
