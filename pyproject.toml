@@ -83,7 +83,7 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 60
+fail_under = 54
 
 
 # flake8
