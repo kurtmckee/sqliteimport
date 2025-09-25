@@ -25,6 +25,53 @@ Please see the fragment files in the `changelog.d directory`_.
 
 ..  scriv-insert-here
 
+.. _changelog-0.14.0:
+
+0.14.0 - 2025-09-25
+===================
+
+Python support
+--------------
+
+*   Drop Python 3.9 support.
+
+Added
+-----
+
+*   Add an ``inject`` command.
+
+    This allows a database of dependencies to be injected into a target file.
+    This can be used to make a Python file a standalone executable.
+
+    This feature requires Python 3.11+ due to Python 3.11+ sqlite3 API usage.
+
+Documentation
+-------------
+
+*   Use ``pngcrush`` to make image file sizes smaller.
+
+*   Link to the source code repository without using an ``iframe``.
+
+*   Document how to import sqliteimport and load a database of packages.
+
+    This now includes runnable scripts showing fully-automated loading
+    using ``sitecustomize.py`` and the ``PYTHONPATH`` environment variable.
+    In addition, more information is provided
+    for manually importing sqliteimport and loading a database.
+
+Development
+-----------
+
+*   Migrate the flake8 configuration to ``pyproject.toml`` using
+    the `flake8-toml-config <https://github.com/kurtmckee/flake8-toml-config>`_ plugin.
+
+*   Test type annotations against all supported Python versions.
+
+*   Lock the GitHub CI runners to known, predictable versions.
+
+*   Lock the coverage dependencies used for generating HTML reports
+    to match the same version used to gather coverage statistics.
+
 .. _changelog-0.13.0:
 
 0.13.0 - 2025-07-24
