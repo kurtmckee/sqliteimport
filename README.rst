@@ -4,7 +4,7 @@
     SPDX-License-Identifier: MIT
 
 
-..  image:: https://raw.githubusercontent.com/kurtmckee/sqliteimport/dfd7095f2df8d6e9249889dd85f102027d1a6cfb/docs/_static/banner.png
+..  image:: https://raw.githubusercontent.com/kurtmckee/sqliteimport/000c868cc82965e7ac1a421c76972db545937d26/docs/_static/banner.png
     :alt: sqlite import: Import Python code from sqlite databases.
 
 -------------------------------------------------------------------------------

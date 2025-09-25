@@ -10,6 +10,7 @@ import textwrap
 
 from . import bundler
 from . import compiler
+from . import injector
 from .accessor import Accessor
 from .util import get_magic_number
 
@@ -156,3 +157,107 @@ def describe(database: pathlib.Path) -> None:
             print(textwrap.indent(str(table), "    "))
         else:
             print("No installed packages were found.")
+
+
+DEFAULT_MARKER = "sqliteimport-inject-here"
+
+
+@group.command(name="inject", no_args_is_help=True)
+@click.option(
+    "--database",
+    type=click.Path(
+        exists=True, dir_okay=False, file_okay=True, path_type=pathlib.Path
+    ),
+    help="The database of packages to inject.",
+)
+@click.option(
+    "--target-file",
+    type=click.Path(
+        exists=True, dir_okay=False, file_okay=True, path_type=pathlib.Path
+    ),
+    help=(
+        """
+        The Python code file to inject sqliteimport
+        and the `--database` of packages into.
+
+        The target file WILL NOT be overwritten by default;
+        it can only be overwritten if it is specified again as the `--output-file`.
+        """
+    ),
+)
+@click.option(
+    "--marker",
+    default=DEFAULT_MARKER,
+    help=(
+        f"""
+        The marker to search for in the `--target-file`.
+
+        The marker must exist in the `--target-file`,
+        and must be a standalone Python comment.
+        For example, by default the marker is "{DEFAULT_MARKER}",
+        so the `--target-file` should contain code like this somewhere:
+
+        \b
+            # {DEFAULT_MARKER}
+        \b
+        """
+    ),
+)
+@click.option(
+    "--output-file",
+    type=click.Path(dir_okay=False, file_okay=True, path_type=pathlib.Path),
+    help=(
+        """
+        The output file to write, containing the code of the `--target-file`
+        combined with the sqliteimport source code and database of dependencies.
+        """
+    ),
+)
+@click.option(
+    "--overwrite",
+    is_flag=True,
+    help=(
+        """
+        If set, the `--output-file` will be overwritten if it exists.
+
+        By default, the `--output-file` will never be overwritten.
+        """
+    ),
+)
+def inject(
+    database: pathlib.Path,
+    target_file: pathlib.Path,
+    output_file: pathlib.Path,
+    marker: str,
+    overwrite: bool,
+) -> None:
+    """Inject sqliteimport and a database of dependencies into a target code file.
+
+    After injection, the code will have the ability to load its own dependencies.
+    This is accomplished by encoding and adding the sqliteimport source code
+    -- along with the database of packages -- directly into the code file.
+
+    The `--marker` option can be used to configure where the code is injected.
+    For example, using the default marker, the target code file might look like this:
+
+    \b
+        def main() -> None:
+            # sqliteimport-inject-here
+    \b
+            import requests
+            requests.get(...)
+    \b
+        if __name__ == "__main__":
+            main()
+
+    Note: this relies on APIs that were first introduced in Python 3.11.
+    Injection will fail on older version of Python.
+    """
+
+    if output_file.exists() and not overwrite:
+        click.echo("The output file already exists.")
+        sys.exit(1)
+    prologue = injector.generate_prologue(database)
+    code = target_file.read_text()
+    rendered_target = injector.inject_prologue(prologue, code, marker)
+    output_file.write_text(rendered_target)

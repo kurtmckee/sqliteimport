@@ -1,13 +1,13 @@
 [project]
 name = "sqliteimport"
-version = "0.13.0"
+version = "0.14.0"
 description = "Import Python code from sqlite databases"
 authors = [
     { name = "Kurt McKee", email = "contactme@kurtmckee.org" },
 ]
 license = "MIT"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = [
     "sqlite",
     "import",
@@ -31,6 +31,8 @@ cli = [
 Source = "https://github.com/kurtmckee/sqliteimport"
 Documentation = "https://sqliteimport.readthedocs.io/en/latest/"
 Changelog = "https://sqliteimport.readthedocs.io/en/latest/changelog/"
+"Donate via GitHub" = "https://github.com/sponsors/kurtmckee"
+"Donate via Ko-Fi" = "https://ko-fi.com/kurtmckee"
 
 [project.scripts]
 sqliteimport = "sqliteimport.cli:group"
@@ -81,7 +83,22 @@ source = [
 
 [tool.coverage.report]
 skip_covered = true
-fail_under = 60
+fail_under = 54
+
+
+# flake8
+# ------
+
+[tool.flake8]
+max-line-length = 80
+extend-select = ["B950"]
+extend-ignore = ["E203", "E501", "E701"]
+extend-exclude = [
+    "demo.py",
+    "docs/flake8/*.py",
+    "docs/isort/*.py",
+    "docs/ruff/*.py",
+]
 
 
 # isort

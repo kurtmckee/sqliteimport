@@ -40,21 +40,26 @@ html_theme_options = {
     # Link to GitHub
     "github_user": "kurtmckee",
     "github_repo": "sqliteimport",
-    "github_button": True,
-    "github_type": "star",
-    "github_count": False,
+    "github_button": False,
     # Donation button
     "donate_url": "https://ko-fi.com/kurtmckee",
 }
 templates_path = ["_templates"]
 html_sidebars = {
     "index": [
-        "about-no-logo.html.jinja",  # Don't show a logo on the front page.
+        "about-no-logo.html.jinja",  # Custom
         "donate.html",
         "navigation.html",
         "relations.html",
         "searchbox.html",
-    ]
+    ],
+    "**": [
+        "about.html.jinja",  # Custom
+        "searchfield.html",
+        "navigation.html",
+        "relations.html",
+        "donate.html",
+    ],
 }
 
 # Don't copy source .rst files into the built documentation.

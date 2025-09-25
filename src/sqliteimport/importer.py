@@ -19,7 +19,6 @@ import typing
 from .accessor import Accessor
 from .compat import Traversable
 from .compat import TraversableResources
-from .compat import accommodate_python_39_from_package_behavior
 
 
 class SqliteFinder(importlib.metadata.DistributionFinder):
@@ -72,7 +71,6 @@ class SqliteFinder(importlib.metadata.DistributionFinder):
             yield SqliteDistribution(module, self.connection)
 
 
-@accommodate_python_39_from_package_behavior
 class SqliteLoader(importlib.abc.InspectLoader):
     def __init__(self, code: types.CodeType, accessor: Accessor) -> None:
         self.code = code
@@ -103,12 +101,6 @@ class SqliteDistribution(importlib.metadata.Distribution):
         self.__name = name
         self.__connection = connection
         self.__accessor = Accessor(connection)
-
-    if sys.version_info < (3, 10):
-        # The `.name` property doesn't exist in Python 3.9.
-        @property
-        def name(self) -> str:
-            return self.metadata["Name"]
 
     def locate_file(self, path: typing.Any) -> pathlib.Path:
         raise NotImplementedError()

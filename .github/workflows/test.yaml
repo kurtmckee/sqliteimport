@@ -26,14 +26,13 @@ jobs:
     strategy:
       matrix:
         runner:
-          - "ubuntu-latest"
-          - "macos-latest"
-          - "windows-latest"
+          - "ubuntu-24.04"
+          - "macos-15"
+          - "windows-2025"
 
         # These values will be applied to all runners listed above.
         include:
           - cpythons:
-              - "3.9"
               - "3.10"
               - "3.11"
               - "3.12"
