@@ -259,4 +259,5 @@ def inject(
         sys.exit(1)
     prologue = injector.generate_prologue(database)
     code = target_file.read_text()
-    injector.inject_prologue(prologue, code, marker)
+    rendered_target = injector.inject_prologue(prologue, code, marker)
+    output_file.write_text(rendered_target)

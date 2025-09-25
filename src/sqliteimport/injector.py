@@ -68,6 +68,7 @@ def inject_prologue(prologue: str, code: str, marker: str) -> str:
             break
         lines.append(line)
     lines.extend(code_iter)
+    lines.append("")  # The trailing newline will be lost otherwise.
     return "\n".join(lines)
 
 
