@@ -127,9 +127,13 @@ sqlite_cache = true
 # pytest
 # ------
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--color=yes"
+[tool.pytest]
+testpaths = [
+    "tests",
+]
+addopts = [
+    "--color=yes",
+]
 filterwarnings = [
     "error",
 ]

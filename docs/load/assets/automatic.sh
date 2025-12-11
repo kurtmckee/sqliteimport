@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
+
+# This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
+# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# SPDX-License-Identifier: MIT
+
 # Install sqliteimport in a virtual environment.
+
 python -m venv demo-venv
 source demo-venv/bin/activate
 python -m pip install sqliteimport[cli]
