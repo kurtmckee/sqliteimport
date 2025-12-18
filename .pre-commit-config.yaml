@@ -84,3 +84,8 @@ repos:
         args: [
           "-e", "SC1091",  # Ignore non-existent 'source ...' targets.
         ]
+
+  - repo: "https://github.com/zizmorcore/zizmor-pre-commit"
+    rev: "v1.18.0"
+    hooks:
+    - id: "zizmor"
