@@ -23,6 +23,9 @@ jobs:
         || (startswith(matrix.runner, 'windows') && 'Windows')
       }}"
 
+    permissions:
+      contents: "read"
+
     strategy:
       matrix:
         runner:
