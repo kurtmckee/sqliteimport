@@ -16,7 +16,6 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -127,9 +126,14 @@ sqlite_cache = true
 # pytest
 # ------
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--color=yes"
+[tool.pytest]
+strict = true
+testpaths = [
+    "tests",
+]
+addopts = [
+    "--color=yes",
+]
 filterwarnings = [
     "error",
 ]
