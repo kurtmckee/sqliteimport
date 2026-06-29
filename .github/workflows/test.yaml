@@ -41,6 +41,7 @@ jobs:
               - "3.12"
               - "3.13"
               - "3.14"
+            cpython-beta: "3.15"
             pypys:
               - "3.11"
             tox-skip-environments:
