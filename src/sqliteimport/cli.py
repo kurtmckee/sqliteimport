@@ -175,21 +175,18 @@ DEFAULT_MARKER = "sqliteimport-inject-here"
     type=click.Path(
         exists=True, dir_okay=False, file_okay=True, path_type=pathlib.Path
     ),
-    help=(
-        """
+    help=("""
         The Python code file to inject sqliteimport
         and the `--database` of packages into.
 
         The target file WILL NOT be overwritten by default;
         it can only be overwritten if it is specified again as the `--output-file`.
-        """
-    ),
+        """),
 )
 @click.option(
     "--marker",
     default=DEFAULT_MARKER,
-    help=(
-        f"""
+    help=(f"""
         The marker to search for in the `--target-file`.
 
         The marker must exist in the `--target-file`,
@@ -200,29 +197,24 @@ DEFAULT_MARKER = "sqliteimport-inject-here"
         \b
             # {DEFAULT_MARKER}
         \b
-        """
-    ),
+        """),
 )
 @click.option(
     "--output-file",
     type=click.Path(dir_okay=False, file_okay=True, path_type=pathlib.Path),
-    help=(
-        """
+    help=("""
         The output file to write, containing the code of the `--target-file`
         combined with the sqliteimport source code and database of dependencies.
-        """
-    ),
+        """),
 )
 @click.option(
     "--overwrite",
     is_flag=True,
-    help=(
-        """
+    help=("""
         If set, the `--output-file` will be overwritten if it exists.
 
         By default, the `--output-file` will never be overwritten.
-        """
-    ),
+        """),
 )
 def inject(
     database: pathlib.Path,
