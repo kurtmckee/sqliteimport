@@ -41,8 +41,7 @@ class Accessor:
     def initialize_database(self) -> None:
         """Create database tables and insert basic information about the database."""
 
-        self.connection.executescript(
-            """
+        self.connection.executescript("""
             CREATE TABLE sqliteimport (
                 field TEXT,
                 value TEXT
@@ -67,8 +66,7 @@ class Accessor:
                 magic_number INTEGER,
                 python_identifier TEXT
             );
-            """
-        )
+            """)
 
     @staticmethod
     def get_database_path(database: sqlite3.Connection) -> str:
@@ -84,16 +82,14 @@ class Accessor:
     def get_magic_numbers(self) -> dict[int, str]:
         """Get the magic numbers of the already-compiled bytecodes in the database."""
 
-        magic_numbers = self.connection.execute(
-            """
+        magic_numbers = self.connection.execute("""
             SELECT
                 magic_number,
                 python_identifier
             FROM
                 magic_numbers
             ;
-            """
-        ).fetchall()
+            """).fetchall()
         return {row[0]: row[1] for row in magic_numbers}
 
     def add_directory(self, directory: pathlib.Path) -> None:
@@ -154,8 +150,7 @@ class Accessor:
         """Create a compiled bytecode table."""
 
         table_name = self.get_bytecode_table_name(magic_number)
-        self.connection.executescript(
-            f"""
+        self.connection.executescript(f"""
             CREATE TABLE {table_name}
             (
                 fullname TEXT,
@@ -165,8 +160,7 @@ class Accessor:
             );
 
             CREATE INDEX {table_name}_fullname_index ON {table_name} (fullname);
-            """
-        )
+            """)
 
     def add_bytecode(
         self, magic_number: int, fullname: str, path: str, is_package: bool, code: bytes
@@ -361,8 +355,7 @@ class Accessor:
 
     def iter_source_code(self) -> typing.Generator[tuple[str, str, bool, bytes]]:
         cursor = self.connection.cursor()
-        iterable = cursor.execute(
-            """
+        iterable = cursor.execute("""
             SELECT
                 fullname,
                 path,
@@ -371,8 +364,7 @@ class Accessor:
             FROM code
             WHERE path LIKE '%.py'
             ;
-            """
-        )
+            """)
         row: tuple[str, str, bool, bytes]
         for row in iterable:
             fullname, path, is_package, contents = row
@@ -382,15 +374,13 @@ class Accessor:
         """Find and return all METADATA files in `.dist-info/` directories."""
 
         cursor = self.connection.cursor()
-        iterable = cursor.execute(
-            """
+        iterable = cursor.execute("""
             SELECT
                 contents
             FROM code
             WHERE path LIKE '%.dist-info/METADATA'
             ;
-            """
-        )
+            """)
         row: tuple[bytes]
         for row in iterable:
             contents = row[0]
