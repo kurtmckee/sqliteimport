@@ -13,6 +13,7 @@ __all__ = [
     "marshal",
     "Traversable",
     "TraversableResources",
+    "typing_override",
 ]
 
 
@@ -55,3 +56,12 @@ if sys.version_info < (3, 14):
 else:
     # No-op for Python 3.14 and higher.
     import compression.lzma
+
+
+if typing.TYPE_CHECKING:
+    if sys.version_info < (3, 12):
+        # Python 3.12 introduced the `typing.override` decorator,
+        # which flags that a base class' method is being overridden.
+        from typing_extensions import override as typing_override
+    else:
+        from typing import override as typing_override

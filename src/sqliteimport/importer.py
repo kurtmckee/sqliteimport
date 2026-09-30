@@ -20,6 +20,9 @@ from .accessor import Accessor
 from .compat import Traversable
 from .compat import TraversableResources
 
+if typing.TYPE_CHECKING:
+    from .compat import typing_override
+
 
 class SqliteFinder(importlib.metadata.DistributionFinder):
     def __init__(self, database: pathlib.Path | sqlite3.Connection) -> None:
@@ -60,6 +63,9 @@ class SqliteFinder(importlib.metadata.DistributionFinder):
 
         return spec
 
+    if typing.TYPE_CHECKING:
+        find_spec = typing_override(find_spec)
+
     def find_distributions(
         self,
         context: importlib.metadata.DistributionFinder.Context | None = None,
@@ -78,6 +84,9 @@ class SqliteLoader(importlib.abc.InspectLoader):
 
     def exec_module(self, module: types.ModuleType) -> None:
         exec(self.code, module.__dict__)
+
+    if typing.TYPE_CHECKING:
+        exec_module = typing_override(exec_module)
 
     def get_resource_reader(self, fullname: str) -> SqliteTraversableResources:
         return SqliteTraversableResources(fullname, self.accessor)

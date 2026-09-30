@@ -41,6 +41,7 @@ class DictFinder(importlib.metadata.DistributionFinder):
     def __init__(self, modules: dict[str, str]) -> None:
         self.modules = modules
 
+    # pyrefly: ignore [missing-override-decorator]
     def find_spec(
         self,
         fullname: str,
@@ -83,6 +84,7 @@ class DictLoader(importlib.abc.InspectLoader):
         self.code = code
         self.source = source
 
+    # pyrefly: ignore [missing-override-decorator]
     def exec_module(self, module: types.ModuleType) -> None:
         exec(self.code, module.__dict__)
 
