@@ -19,24 +19,6 @@ sqliteimport_modules: dict[str, str] = {}  # Inject: sqliteimport_modules
 # IGNORE: END
 
 
-if sys.version_info < (3, 11):
-    msg = """
-        Python 3.11 or higher is required to run this program.
-        (Python {sys.version} detected.)
-        ----
-        If you are a user:
-        This program may support Python 3.10 and lower in other circumstances.
-        However, it is packaged in a way that requires Python 3.11 and higher.
-        If you have access to Python 3.11 or higher,
-        you may be able to re-run the program.
-        ----
-        If you are developer:
-        This program's Python dependencies were injected using sqliteimport.
-        Only Python 3.11 and higher have compatible sqlite3 APIs to support this.
-    """
-    raise RuntimeError(msg)
-
-
 class DictFinder(importlib.metadata.DistributionFinder):
     def __init__(self, modules: dict[str, str]) -> None:
         self.modules = modules

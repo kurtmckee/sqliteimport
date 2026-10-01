@@ -7,6 +7,7 @@ from __future__ import annotations
 import importlib.abc
 import importlib.machinery
 import importlib.metadata
+import importlib.resources.abc
 import io
 import os.path
 import pathlib
@@ -17,8 +18,6 @@ import types
 import typing
 
 from .accessor import Accessor
-from .compat import Traversable
-from .compat import TraversableResources
 
 if typing.TYPE_CHECKING:
     from .compat import typing_override
@@ -119,7 +118,7 @@ class SqliteDistribution(importlib.metadata.Distribution):
         return raw_content.decode("utf-8")
 
 
-class SqliteTraversableResources(TraversableResources):
+class SqliteTraversableResources(importlib.resources.abc.TraversableResources):
     def __init__(self, fullname: str, accessor: Accessor) -> None:
         self.fullname = fullname
         self.accessor = accessor
@@ -128,7 +127,7 @@ class SqliteTraversableResources(TraversableResources):
         return SqliteTraversable(self.fullname, self.accessor)
 
 
-class SqliteTraversable(Traversable):
+class SqliteTraversable(importlib.resources.abc.Traversable):
     def __init__(self, path: str, accessor: Accessor) -> None:
         self._path = path
         self._accessor = accessor
