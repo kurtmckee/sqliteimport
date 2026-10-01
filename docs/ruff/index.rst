@@ -50,12 +50,12 @@ You can force sqliteimport to the top of the third party section:
 ..  literalinclude:: assets/force-to-top/pyproject.toml
     :caption: ``pyproject.toml``
     :language: toml
-    :lines: 1-2
+    :end-before: end-before-cut-line
 
 ..  literalinclude:: assets/force-to-top/ruff.toml
     :caption: ``ruff.toml``
     :language: toml
-    :lines: 1-2
+    :end-before: end-before-cut-line
 
 Result:
 
@@ -68,4 +68,4 @@ Result:
 You can add a comment to the end of the line to disable ruff's flake8 ``F401`` error:
 
 ..  literalinclude:: assets/F401/example.py
-    :lines: 1-7
+    :end-before: end-before-cut-line
