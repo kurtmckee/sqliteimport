@@ -12,8 +12,8 @@ import requests
 # to ensure that the `noqa` comment, NOT `__all__`,
 # is actually disabling the F401 error.
 __all__ = [
-    "os",
-    "sys",
     "boto3",
+    "os",
     "requests",
+    "sys",
 ]
