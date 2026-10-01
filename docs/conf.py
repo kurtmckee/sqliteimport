@@ -12,7 +12,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "sqliteimport"
-copyright = "2024-2025 Kurt McKee"
+copyright = "2024-2026 Kurt McKee"
 
 # Extract the project version.
 pyproject_ = pathlib.Path(__file__).parent.parent / "pyproject.toml"
