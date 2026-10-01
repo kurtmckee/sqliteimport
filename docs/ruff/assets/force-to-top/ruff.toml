@@ -1,5 +1,5 @@
 [lint.isort]
 force-to-top = ["sqliteimport"]
 
-# Hidden from rendering in the docs.
+# end-before-cut-line: Content below this line is not rendered in the docs.
 known-third-party = ["sqliteimport"]
