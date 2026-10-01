@@ -1,5 +1,5 @@
 # This file is a part of sqliteimport <https://github.com/kurtmckee/sqliteimport>
-# Copyright 2024-2025 Kurt McKee <contactme@kurtmckee.org>
+# Copyright 2024-2026 Kurt McKee <contactme@kurtmckee.org>
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
@@ -128,13 +128,12 @@ class SqliteTraversable(Traversable):
         for path in self._accessor.list_directory(self._path):
             yield SqliteTraversable(path, self._accessor)
 
-    def joinpath(self, *descendants: str) -> SqliteTraversable:
-        return SqliteTraversable(
-            f"{self._path}/{'/'.join(descendants)}", self._accessor
-        )
+    def joinpath(self, *descendants: str | os.PathLike[str]) -> SqliteTraversable:
+        path = f"{self._path}/{'/'.join(str(d) for d in descendants)}"
+        return SqliteTraversable(path, self._accessor)
 
-    def __truediv__(self, other: str) -> SqliteTraversable:
-        return self.joinpath(other)
+    def __truediv__(self, child: str | os.PathLike[str]) -> SqliteTraversable:
+        return self.joinpath(child)
 
     def is_dir(self) -> bool:
         return False
