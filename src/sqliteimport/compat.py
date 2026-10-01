@@ -11,8 +11,6 @@ import typing
 __all__ = [
     "compression",
     "marshal",
-    "Traversable",
-    "TraversableResources",
     "typing_override",
 ]
 
@@ -35,14 +33,6 @@ if sys.version_info < (3, 13):
 else:
     # No-op for Python 3.13 and higher.
     marshal = marshal_
-
-if sys.version_info >= (3, 11):
-    # Python 3.11 moved some abstract base classes.
-    from importlib.resources.abc import Traversable
-    from importlib.resources.abc import TraversableResources
-else:
-    from importlib.abc import Traversable
-    from importlib.abc import TraversableResources
 
 
 if sys.version_info < (3, 14):

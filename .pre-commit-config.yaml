@@ -2,7 +2,7 @@ ci:
   autoupdate_schedule: "quarterly"
 
 default_language_version:
-  python: "python3.13"
+  python: "python3.14"
 
 exclude: "tests/installed-projects|shift_jis\\.py"
 
@@ -28,8 +28,8 @@ repos:
     rev: "75992aaa40730136014f34227e0135f63fc951b4"  # frozen: v3.21.2
     hooks:
       - id: "pyupgrade"
-        name: "Enforce Python 3.10+ idioms"
-        args: ["--py310-plus"]
+        name: "Enforce Python 3.11+ idioms"
+        args: ["--py311-plus"]
 
   - repo: "https://github.com/sirosen/slyp"
     rev: "072ea633cef088f143be7c16499d1564485dfc0c"  # frozen: 0.9.0
